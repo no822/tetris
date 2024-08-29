@@ -7,7 +7,7 @@ export function pair(x, y) {
         : "error" ;
   }
   return dispatch;
-};
+}
 
 export function is_pair(p) {
   return typeof p === 'function' && head(p) !== undefined;
@@ -19,26 +19,86 @@ export function is_null(n) {
 
 export function head(p) {
   return p(0);
-};
+}
 
 export function tail(p) {
   return p(1);
-};
+}
+
+export function append(p1, p2) {
+
+}
 
 export function list(...items) {
   const [first, ...rest] = items;
   if (is_null(first)) return null;
   return pair(first, list(...rest));
-};
+}
 
 /**
- * list 함수로 만든 연결리스트를 배열로 변환합니다.(debugging 용)
+ * list 함수로 만든 연결리스트를 배열로 변환합니다.
  */
-export function display(list) {
+export function listToArray(list) {
   if (is_null(list)) return [];
   return is_pair(head(list))
-    ? [display(head(list)), ...display(tail(list))]
-    : [head(list), ...display(tail(list))];
+      ? [listToArray(head(list)), ...listToArray(tail(list))]
+      : [head(list), ...listToArray(tail(list))];
 };
 
+
+/**
+ * 배열을 list 연결리스트로 변환합니다. 2중첩 배열까지 지원합니다.
+ * TODO 재귀 버전으로 재구현
+ */
+export function arrayToList(array) {
+  const accList = [];
+
+  for (const item of array) {
+    if (Array.isArray(item)) {
+      accList.push(list(...item));
+    } else {
+      accList.push(item);
+    }
+
+  }
+
+  return list(...accList);
+}
+
+
+export function copy_list(list) {
+  return arrayToList(listToArray(list));
+}
+
+export function for_each(list, callback) {
+  if (is_null(list)) return;
+
+  if (is_pair(head(list))) {
+    for_each(head(list), callback);
+  } else {
+    // for_each item
+    callback(head(list), callback);
+  }
+
+  return for_each(tail(list), callback);
+}
+
+export function map(list, callback) {
+  return arrayToList(
+    listToArray(list).map(item => {
+      if (Array.isArray(item)) return item.map(callback);
+      return callback(item);
+    })
+  );
+}
+
+export function point(x, y, list) {
+  return listToArray(list)[y][x];
+};
+
+export function set_point(x, y, value, list) {
+  const targetList = listToArray(list);
+  targetList[y][x] = value;
+  return arrayToList(targetList);
+}
 

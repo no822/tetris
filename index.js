@@ -1,8 +1,8 @@
 import * as L from './list.js';
 import * as B from './block.js';
+import * as A from './area.js';
 
 // TODO 테트리스 만들기
-console.log('initialize');
 const IBlock = B.makeBlock('I');
 const OBlock = B.makeBlock('O');
 const JBlock = B.makeBlock('J');
@@ -11,8 +11,6 @@ const BBlock = B.makeBlock('B');
 const TBlock = B.makeBlock('T');
 const SBlock = B.makeBlock('S');
 const ZBlock = B.makeBlock('Z');
-
-console.log(L.display(SBlock));
 
 // sicpJS 1, 2장의 내용 연습 & 구현력 확인 겸 작업
 // 함수 추상화, 데이터 추상화, 추상화 장벽 등을 잘 설계해볼 것
