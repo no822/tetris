@@ -70,7 +70,7 @@ export function color(b) {
 };
 
 export function coords(b) {
-  return L.tail(b)
+  return L.head(L.tail(b));
 };
 
 export function makeBlock(type) {
@@ -91,7 +91,8 @@ export function makeBlock(type) {
 };
 
 export function makeRandomBlock() {
-  // TODO 랜덤 생성 기능
-  return makeBlock('O');
+  // TODO 몬테카를로 방법 적용해보기
+  const types = ['I', 'O', 'J', 'L', 'T', 'S', 'Z'];
+  return makeBlock(types[Math.floor(Math.random() * types.length)]);
 };
 
