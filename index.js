@@ -3,11 +3,15 @@ import * as B from './block.js';
 import * as A from './area.js';
 
 // TODO jest 환경 설정
+
 console.log(
     L.listToArray(
-        A.addNewBlock(
-            A.GameArea,
-            B.makeRandomBlock()
+        A.moveBlock(
+            A.addNewBlock(
+                A.GameArea(),
+                B.makeRandomBlock()
+            ),
+            'down'
         )
     )
 );
@@ -35,9 +39,9 @@ console.log(
 
 // <테트리스 요구사항 정리>
 // 구성요소들
+  // 4종류의 블럭들: 블럭 종류, 색상, 회전 규칙
   // 10 * 20 의 게임 영역
     // 경계 충돌
-  // 4종류의 블럭들: 블럭 종류, 색상, 회전 규칙
   // 점수
   // 난이도(블럭 스피드, 점수 상승 공식)
   // 블록 움직임

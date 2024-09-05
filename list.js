@@ -39,7 +39,7 @@ export function listToArray(list) {
   return is_pair(head(list))
       ? [listToArray(head(list)), ...listToArray(tail(list))]
       : [head(list), ...listToArray(tail(list))];
-};
+}
 
 
 /**
@@ -76,11 +76,11 @@ export function for_each(list, callback) {
   }
 
   return for_each(tail(list), callback);
-};
+}
 
 export function filter(list, predicate) {
   return arrayToList(listToArray(list).filter(predicate));
-};
+}
 
 export function map(list, callback) {
   return arrayToList(
@@ -95,7 +95,7 @@ export function map(list, callback) {
 
 export function point(x, y, list) {
   return listToArray(list)[y][x];
-};
+}
 
 export function set_point(x, y, value, list) {
   const targetList = listToArray(list);

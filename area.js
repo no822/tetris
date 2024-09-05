@@ -1,88 +1,144 @@
 import * as L from "./list.js";
 import * as B from './block.js';
 
-const initialCoordinate = function() {
+function initialCoordinate() {
   const coordinate =  L.pair(3, 0);
 
-  function dispatch(id){
+  return function dispatch(id){
     return id === 'x'
       ? L.head(coordinate)
       : id === 'y'
       ? L.tail(coordinate)
       : "error";
-  }
+  };
+}
 
-  return dispatch;
-};
+function empty() {
+  return 0;
+}
 
 function active() {
   return 2;
-};
+}
+
+function is_active(n) {
+  return n === 2;
+}
 
 function is_empty(n) {
   return n === 0;
-};
+}
 
-export const GameArea = L.list(
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-);
+function xyMap(list, x, y) {
+  return L.map(
+      list,
+      (item, xIndex, yIndex) => {
+        return !is_active(item)
+          ? NaN
+          : L.list(
+              xIndex + x,
+              yIndex + y
+        )
+      }
+  )
+}
 
-
-// addBlock :: Area -> Coordinate -> Block -> Area
-export function addBlock(area, initialPoint, newCoords) {
-  const updatedCoords = L.listToArray(
-          L.map(
-              newCoords,
-              (item, xIndex, yIndex) => {
-                if (is_empty(item)) return NaN;
-                return L.list(
-                  xIndex + initialPoint('x'),
-                  yIndex + initialPoint('y')
-                )
-              }
-          )
-      )
+function updateTarget(list) {
+  return L.listToArray(list)
       .flat()
-      .filter(i => !Number.isNaN(i));
+      .filter(i => {
+        return !Number.isNaN(i);
+      })
+}
 
-  return (function recur(list, area) {
-    if (list.length === 0) return area;
+function removeActive(list) {
+  return L.map(
+      list,
+      (item) => {
+        if (is_active(item)) return empty();
+        return item;
+      }
+  );
+}
 
-    const [[x, y], ...rest] = list;
-    // TODO 충돌판정 로직 추가
+// addBlock :: area -> point -> blockCoords -> area
+function internal_addBlock(area, initialPoint, newCoords) {
+  return (function recur(array, area) {
+    if (array.length === 0) return area;
+
+    const [[x, y], ...rest] = array;
     const newArea =  L.set_point(x, y, active(), area);
 
     return recur(rest, newArea);
-  })(updatedCoords, area);
+  })(updateTarget(
+      xyMap(
+          newCoords,
+          initialPoint('x'),
+          initialPoint('y')
+      )
+  ), area);
 }
 
-// addNewBlock :: Area -> Block -> Area
+// internal_moveBlock :: area -> x -> y -> area
+function internal_moveBlock(area, xMove, yMove) {
+  return (function recur(array, area) {
+    if (array.length === 0) return area;
+
+    const [[x, y], ...rest] = array;
+    const newArea =  L.set_point(x, y, active(), area);
+    return recur(rest, newArea);
+  })(updateTarget(
+      xyMap(
+          area,
+          xMove,
+          yMove
+      )
+  ), removeActive(area));
+}
+
+export function GameArea() {
+  return L.list(
+      L.list(0,0,0,0,0,0,0,0,0,0),
+      L.list(0,0,0,0,0,0,0,0,0,0),
+      L.list(0,0,0,0,0,0,0,0,0,0),
+      L.list(0,0,0,0,0,0,0,0,0,0),
+      L.list(0,0,0,0,0,0,0,0,0,0),
+      L.list(0,0,0,0,0,0,0,0,0,0),
+      L.list(0,0,0,0,0,0,0,0,0,0),
+      L.list(0,0,0,0,0,0,0,0,0,0),
+      L.list(0,0,0,0,0,0,0,0,0,0),
+      L.list(0,0,0,0,0,0,0,0,0,0),
+      L.list(0,0,0,0,0,0,0,0,0,0),
+      L.list(0,0,0,0,0,0,0,0,0,0),
+      L.list(0,0,0,0,0,0,0,0,0,0),
+      L.list(0,0,0,0,0,0,0,0,0,0),
+      L.list(0,0,0,0,0,0,0,0,0,0),
+      L.list(0,0,0,0,0,0,0,0,0,0),
+      L.list(0,0,0,0,0,0,0,0,0,0),
+      L.list(0,0,0,0,0,0,0,0,0,0),
+      L.list(0,0,0,0,0,0,0,0,0,0),
+      L.list(0,0,0,0,0,0,0,0,0,0)
+  );
+}
+
+// addNewBlock :: area -> block -> area
 export function addNewBlock(area, block) {
   const blockCoordinate = B.coords(block);
   const initCoordinate = initialCoordinate();
-  return addBlock(area, initCoordinate, blockCoordinate);
-};
+  return internal_addBlock(area, initCoordinate, blockCoordinate);
+}
 
-// aliveBlock :: Area -> coordinate -> Block
-// moveBlock :: Direction -> Area
+// moveBlock :: direction -> area
+export function moveBlock(area, direction) {
+  return direction === 'left'
+    ? internal_moveBlock(area, 0, 1)
+    : direction === 'right'
+    ? internal_moveBlock(area, 1, 0)
+    : direction === 'down'
+    ? internal_moveBlock(area, 0, 1)
+    : "error"
+}
+
+
 // rotateBlock :: Direction -> Area
 
