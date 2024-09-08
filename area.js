@@ -13,20 +13,28 @@ function initialCoordinate() {
   };
 }
 
-function empty() {
+export function empty() {
   return 0;
 }
 
-function active() {
+export function active() {
   return 2;
 }
 
-function is_active(n) {
+function is_active(n){
   return n === 2 || is_axis(n);
+}
+
+function axis() {
+  return 3;
 }
 
 function is_empty(n) {
   return n === 0;
+}
+
+function is_axis(n) {
+  return n === 3;
 }
 
 function xyMap(list, x, y) {
@@ -35,8 +43,7 @@ function xyMap(list, x, y) {
       (item, xIndex, yIndex) => {
         return !is_active(item)
           ? NaN
-          : L.list(
-              xIndex + x,
+          : L.list( xIndex + x,
               yIndex + y,
               item
         )
@@ -44,7 +51,7 @@ function xyMap(list, x, y) {
   )
 }
 
-function updateTarget(list) {
+function activeCoords(list) {
   return L.listToArray(list)
       .flat()
       .filter(i => {
@@ -71,7 +78,7 @@ function internal_addBlock(area, initialPoint, newCoords) {
     const newArea =  L.set_point(x, y, point, area);
 
     return recur(rest, newArea);
-  })(updateTarget(
+  })(activeCoords(
       xyMap(
           newCoords,
           initialPoint('x'),
@@ -88,7 +95,7 @@ function internal_moveBlock(area, xMove, yMove) {
     const [[x, y, point], ...rest] = array;
     const newArea =  L.set_point(x, y, point, currentArea);
     return recur(rest, newArea);
-  })(updateTarget(
+  })(activeCoords(
       xyMap(
           area,
           xMove,
@@ -132,10 +139,13 @@ export function addNewBlock(area, block) {
 // moveBlock :: direction -> area
 export function moveBlock(area, direction) {
   return direction === 'left'
-    ? internal_moveBlock(area, 0, 1)
+    ? internal_moveBlock(area, -1, 0)
     : direction === 'right'
     ? internal_moveBlock(area, 1, 0)
     : direction === 'down'
     ? internal_moveBlock(area, 0, 1)
+    : direction === 'up'
+    ? internal_moveBlock(area, 0, -1)
     : "error"
 }
+

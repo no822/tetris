@@ -1,3 +1,5 @@
+import * as A from './area.js';
+
 export function pair(x, y) {
   function dispatch(n) {
     return n === 0
@@ -40,7 +42,6 @@ export function listToArray(list) {
       ? [listToArray(head(list)), ...listToArray(tail(list))]
       : [head(list), ...listToArray(tail(list))];
 }
-
 
 /**
  * 배열을 list 연결리스트로 변환합니다. 2중첩 배열까지 지원합니다.
@@ -93,7 +94,12 @@ export function map(list, callback) {
 }
 
 export function point(x, y, list) {
-  return listToArray(list)[y][x];
+  try {
+    const result = listToArray(list)[y][x];
+    return result;
+  } catch (error) {
+    return null;
+  }
 }
 
 export function find_coordinate(area, n) {
@@ -112,3 +118,49 @@ export function set_point(x, y, value, list) {
   return arrayToList(targetList);
 }
 
+// moveInfo :: Array<Array<number, number, number, number>>
+// move_points :: list -> moveInfo -> list
+// export function move_points(list) {
+//   return function recur(moveInfos, newList = list) {
+//     if (moveInfos.length === 0) {
+//       return newList;
+//     }
+//     const [[sourceX, sourceY, targetX, targetY], ...rest] = moveInfos;
+//
+//     const moved = set_point(
+//         targetX,
+//         targetY,
+//         A.active(),
+//         set_point(sourceX, sourceY, A.empty(), newList),
+//     );
+//
+//     const result = recur(
+//         rest,
+//         moved
+//     );
+//
+//     // console.log(moveInfos);
+//     // console.log(listToArray(list));
+//     // console.log(listToArray(result));
+//     return result
+//   }
+// }
+
+export function move_points(list) {
+  return function dispatch(moveInfos) {
+    const deleted = moveInfos
+        .map(([sourceX, sourceY]) => [sourceX, sourceY])
+        .reduce((newList, [sourceX, sourceY]) => {
+          return set_point(sourceX, sourceY, A.empty(), newList);
+        }, list);
+
+    const moved = moveInfos
+        .map(([, , targetX, targetY]) =>  [targetX, targetY])
+        .reduce((deletedNewList, [targetX, targetY]) => {
+          return set_point(targetX, targetY, A.active(), deletedNewList);
+        }, deleted);
+
+    return moved;
+  }
+  return dispatch;
+}

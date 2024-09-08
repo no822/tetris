@@ -1,49 +1,30 @@
 import * as L from './list.js';
 import * as B from './block.js';
 import * as A from './area.js';
+import * as R from './rotate.js';
 
 // TODO jest 환경 설정
 
-const area = L.listToArray(
-    A.moveBlock(
-        A.moveBlock(
-            A.moveBlock(
-                A.addNewBlock(
-                    A.GameArea(),
-                    B.makeRandomBlock()
-                ),
-                'left'
-            ),
-            'down'
-        ),
-        'down'
-    )
-);
+const area =
+  A.moveBlock(
+      A.addNewBlock(
+          A.GameArea(),
+          B.ZBLOCK()
+      ),
+      'down'
+  )
 
-console.log(area);
+const axisCoord = L.list(4, 1);
 
+const rotate1 = R.rotateBlock(area, 'right', axisCoord);
+const rotate2 = R.rotateBlock(rotate1, 'right', axisCoord);
+const rotate3 = R.rotateBlock(rotate2, 'right', axisCoord);
+const rotate4 = R.rotateBlock(rotate3, 'right', axisCoord);
 
-
-// sicpJS 1, 2장의 내용 연습 & 구현력 확인 겸 작업
-// 함수 추상화, 데이터 추상화, 추상화 장벽 등을 잘 설계해볼 것
-
-// <1장의 내용 (기억나는대로의) 정리>
-// 프로그래밍의 최소 단위 소개(표현식)
-// 가장 단순한 형태의 추상화 소개(프로시저 또는 함수)
-  // 함수 적용의 모형(정상치환 모형, 인수우선 치환모형)
-  // 재귀(일반재귀, 트리재귀 등)
-  // 고차함수
-
-// <2장>
-// 데이터 추상화
-  // 추상화 장벽 개념 소개
-  // 생성자, 선택자 등을 통해 데이터 추상화 방법 소개
-  // 여러 예제들
-    // 유리수 연산
-    // 그림 언어
-    // 기호 미분
-    // 집합의 표현
-    // 복소수 연산
+console.log(L.listToArray(rotate1))
+console.log(L.listToArray(rotate2))
+console.log(L.listToArray(rotate3))
+console.log(L.listToArray(rotate4))
 
 // <테트리스 요구사항 정리>
 // 구성요소들
