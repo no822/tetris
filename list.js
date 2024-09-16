@@ -55,7 +55,6 @@ export function arrayToList(array) {
     } else {
       accList.push(item);
     }
-
   }
 
   return list(...accList);
@@ -95,6 +94,16 @@ export function map(list, callback) {
 
 export function point(x, y, list) {
   return listToArray(list)[y][x];
+}
+
+export function find_coordinate(area, n) {
+  const array = listToArray(list);
+  for (let i=0; i<array.length; i++) {
+    for (let j=0; j<array[i].length; j++) {
+      if (array[i][j] === n) return list(j, i);
+    }
+  }
+  return null;
 }
 
 export function set_point(x, y, value, list) {

@@ -4,17 +4,25 @@ import * as A from './area.js';
 
 // TODO jest 환경 설정
 
-console.log(
-    L.listToArray(
+const area = L.listToArray(
+    A.moveBlock(
         A.moveBlock(
-            A.addNewBlock(
-                A.GameArea(),
-                B.makeRandomBlock()
+            A.moveBlock(
+                A.addNewBlock(
+                    A.GameArea(),
+                    B.makeRandomBlock()
+                ),
+                'left'
             ),
             'down'
-        )
+        ),
+        'down'
     )
 );
+
+console.log(area);
+
+
 
 // sicpJS 1, 2장의 내용 연습 & 구현력 확인 겸 작업
 // 함수 추상화, 데이터 추상화, 추상화 장벽 등을 잘 설계해볼 것

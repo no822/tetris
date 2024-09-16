@@ -51,7 +51,7 @@ export const LBLOCK = function() {
       'GREEN',
       L.list(
           L.list(2,0,0,0),
-          L.list(2,2,2,0),
+          L.list(3,2,2,0),
           L.list(0,0,0,0),
           L.list(0,0,0,0)
       )
@@ -62,7 +62,7 @@ export const JBLOCK = function() {
   return L.list(
       'PURPLE',
       L.list(
-          L.list(2,2,2,0),
+          L.list(2,2,3,0),
           L.list(0,0,2,0),
           L.list(0,0,0,0),
           L.list(0,0,0,0)
@@ -71,14 +71,11 @@ export const JBLOCK = function() {
 }
 
 export const SBLOCK = function() {
-  return L.list(
-      'CRIMSON',
-      L.list(
-          L.list(2,2,0,0),
-          L.list(0,2,2,0),
-          L.list(0,0,0,0),
-          L.list(0,0,0,0)
-      )
+  L.list(
+      L.list(0,2,0,0),
+      L.list(0,3,2,0),
+      L.list(0,2,0,0),
+      L.list(0,0,0,0)
   );
 }
 
@@ -86,7 +83,7 @@ export const ZBLOCK = function() {
   return L.list(
       'GRAY',
       L.list(
-          L.list(0,2,2,0),
+          L.list(0,3,2,0),
           L.list(2,2,0,0),
           L.list(0,0,0,0),
           L.list(0,0,0,0)
@@ -124,7 +121,3 @@ export function makeRandomBlock() {
   const types = ['I', 'O', 'J', 'L', 'T', 'S', 'Z'];
   return makeBlock(types[Math.floor(Math.random() * types.length)]);
 }
-
-// export function rotateBlock(block) {
-//
-// }

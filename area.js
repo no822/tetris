@@ -22,7 +22,7 @@ function active() {
 }
 
 function is_active(n) {
-  return n === 2;
+  return n === 2 || is_axis(n);
 }
 
 function is_empty(n) {
@@ -37,7 +37,8 @@ function xyMap(list, x, y) {
           ? NaN
           : L.list(
               xIndex + x,
-              yIndex + y
+              yIndex + y,
+              item
         )
       }
   )
@@ -66,8 +67,8 @@ function internal_addBlock(area, initialPoint, newCoords) {
   return (function recur(array, area) {
     if (array.length === 0) return area;
 
-    const [[x, y], ...rest] = array;
-    const newArea =  L.set_point(x, y, active(), area);
+    const [[x, y, point], ...rest] = array;
+    const newArea =  L.set_point(x, y, point, area);
 
     return recur(rest, newArea);
   })(updateTarget(
@@ -81,11 +82,11 @@ function internal_addBlock(area, initialPoint, newCoords) {
 
 // internal_moveBlock :: area -> x -> y -> area
 function internal_moveBlock(area, xMove, yMove) {
-  return (function recur(array, area) {
-    if (array.length === 0) return area;
+  return (function recur(array, currentArea) {
+    if (array.length === 0) return currentArea;
 
-    const [[x, y], ...rest] = array;
-    const newArea =  L.set_point(x, y, active(), area);
+    const [[x, y, point], ...rest] = array;
+    const newArea =  L.set_point(x, y, point, currentArea);
     return recur(rest, newArea);
   })(updateTarget(
       xyMap(
@@ -138,7 +139,3 @@ export function moveBlock(area, direction) {
     ? internal_moveBlock(area, 0, 1)
     : "error"
 }
-
-
-// rotateBlock :: Direction -> Area
-
