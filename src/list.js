@@ -118,34 +118,6 @@ export function set_point(x, y, value, list) {
   return arrayToList(targetList);
 }
 
-// moveInfo :: Array<Array<number, number, number, number>>
-// move_points :: list -> moveInfo -> list
-// export function move_points(list) {
-//   return function recur(moveInfos, newList = list) {
-//     if (moveInfos.length === 0) {
-//       return newList;
-//     }
-//     const [[sourceX, sourceY, targetX, targetY], ...rest] = moveInfos;
-//
-//     const moved = set_point(
-//         targetX,
-//         targetY,
-//         A.active(),
-//         set_point(sourceX, sourceY, A.empty(), newList),
-//     );
-//
-//     const result = recur(
-//         rest,
-//         moved
-//     );
-//
-//     // console.log(moveInfos);
-//     // console.log(listToArray(list));
-//     // console.log(listToArray(result));
-//     return result
-//   }
-// }
-
 export function move_points(list) {
   return function dispatch(moveInfos) {
     const deleted = moveInfos

@@ -1,30 +1,21 @@
 import * as L from './list.js';
 import * as B from './block.js';
 import * as A from './area.js';
-import * as R from './rotate.js';
-
-// TODO jest 환경 설정
 
 const area =
-  A.moveBlock(
-      A.addNewBlock(
-          A.GameArea(),
-          B.ZBLOCK()
+    A.moveBlock(
+      A.moveBlock(
+          A.addNewBlock(
+              A.GameArea(),
+              B.OBLOCK()
+          ),
+          'down'
       ),
-      'down'
-  )
+      'up'
+    )
 
 const axisCoord = L.list(4, 1);
-
-const rotate1 = R.rotateBlock(area, 'right', axisCoord);
-const rotate2 = R.rotateBlock(rotate1, 'right', axisCoord);
-const rotate3 = R.rotateBlock(rotate2, 'right', axisCoord);
-const rotate4 = R.rotateBlock(rotate3, 'right', axisCoord);
-
-console.log(L.listToArray(rotate1))
-console.log(L.listToArray(rotate2))
-console.log(L.listToArray(rotate3))
-console.log(L.listToArray(rotate4))
+console.log(L.listToArray(area))
 
 // <테트리스 요구사항 정리>
 // 구성요소들

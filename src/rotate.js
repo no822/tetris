@@ -5,6 +5,8 @@ import * as A from "./area.js";
 // type place = 'above' | 'below' | 'right' | 'left'
 // rotateBlock :: area -> direction -> axisCoordinate -> area
 export function rotateBlock(area, direction, axisCoord) {
+  if (axisCoord === null) return area;
+
   const above = find_dest_coords(area, direction, axisCoord, 'above');
   const right = find_dest_coords(area, direction, axisCoord, 'right');
   const left = find_dest_coords(area, direction, axisCoord, 'left');
