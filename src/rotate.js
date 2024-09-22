@@ -14,6 +14,7 @@ export function rotateBlock(area, direction, axisCoord) {
   return movePoints([...above, ...right, ...left, ...below]);
 }
 
+
 // find_dest_coords :: area, direction, axisCoord, type, destCoords
 // -> Array<[number, number, number, number]>
 function find_dest_coords(
