@@ -7,106 +7,85 @@ import * as A from "./area.js";
 export function rotateBlock(area, direction, axisCoord) {
   if (axisCoord === null) return area;
 
-  const above = find_dest_coords(area, direction, axisCoord, 'above');
-  const right = find_dest_coords(area, direction, axisCoord, 'right');
-  const left = find_dest_coords(area, direction, axisCoord, 'left');
-  const below = find_dest_coords(area, direction, axisCoord, 'below');
+  const above = find_moveInfos(area, direction, 'above', axisCoord);
+  const right = find_moveInfos(area, direction, 'right', axisCoord);
+  const left = find_moveInfos(area, direction, 'left', axisCoord);
+  const below = find_moveInfos(area, direction, 'below', axisCoord);
 
   const movePoints = L.move_points(area);
   return movePoints([...above, ...right, ...left, ...below]);
 }
 
 
-// find_dest_coords :: area, direction, axisCoord, type, destCoords
+// find_moveInfos :: area, directionFromAxis, currentAxisCoord, nextAxisCoord, accMoveInfo
 // -> Array<[number, number, number, number]>
-function find_dest_coords(
+function find_moveInfos(
     area,
     rotateDirection,
-    axisCoord,
-    type,
-    destCoords = [],
-    nextAxisCoord = null
+    directionFromAxis,
+    currentAxisCoord,
+    nextAxisCoord = null,
+    accMoveInfo = []
 ) {
-  const coordArray = L.listToArray(axisCoord);
+  const axisCoordArray = L.listToArray(currentAxisCoord);
   const nextCoordArray = nextAxisCoord === null ? null : L.listToArray(nextAxisCoord);
 
-  let currentBlockCoord;
-  let currentDestBlockCoord;
+  const currentSrcCoord = currentSrcCoordinate(axisCoordArray, directionFromAxis);
+  const currentDestBlockCoord = currentDestCoordinate(nextCoordArray ?? axisCoordArray, directionFromAxis, rotateDirection);
+  const currentMoveInfo = [...accMoveInfo, [...currentSrcCoord, ...currentDestBlockCoord]];
 
-  if (type === 'above') {
-    currentBlockCoord = coordArray
-        .map((coord, index) => index === 1 ? coord - 1 : coord);
+  const currentBlockValue = L.point(currentSrcCoord[0], currentSrcCoord[1], area);
+  if (currentBlockValue === A.empty()) return [];
 
-    currentDestBlockCoord = (nextCoordArray === null ? coordArray : nextCoordArray)
-        .map((coord, index) => {
-          if (rotateDirection === 'right') return index === 0 ? coord + 1 : coord;
-          if (rotateDirection === 'left') return index === 0 ? coord - 1 : coord;
-        });
-
-  } else if (type === 'right') {
-    currentBlockCoord = coordArray
-        .map((coord, index) => index === 0 ? coord + 1 : coord);
-
-    currentDestBlockCoord = (nextCoordArray === null ? coordArray : nextCoordArray)
-        .map((coord, index) => {
-          if (rotateDirection === 'right') return index === 1 ? coord + 1 : coord;
-          if (rotateDirection === 'left') return index === 1 ? coord - 1 : coord;
-        });
-
-  } else if (type === 'left') {
-    currentBlockCoord = coordArray
-        .map((coord, index) => index === 0 ? coord - 1 : coord);
-
-    currentDestBlockCoord = (nextCoordArray === null ? coordArray : nextCoordArray)
-        .map((coord, index) => {
-          if (rotateDirection === 'right') return index === 1 ? coord - 1 : coord;
-          if (rotateDirection === 'left') return index === 1 ? coord + 1 : coord;
-        });
-
-  } else if (type === 'below') {
-    currentBlockCoord = coordArray
-        .map((coord, index) => index === 1 ? coord + 1 : coord);
-
-    currentDestBlockCoord = (nextCoordArray === null ? coordArray : nextCoordArray)
-        .map((coord, index) => {
-          if (rotateDirection === 'right') return index === 0 ? coord - 1 : coord;
-          if (rotateDirection === 'left') return index === 0 ? coord + 1 : coord;
-        });
-
-  } else throw new Error(`not found type: ${type}`);
-
-  const currentMoveInfo = [...destCoords, [...currentBlockCoord, ...currentDestBlockCoord]];
-  const nestedDirection = find_nested_direction(
+  const nextDirection = find_next_block_direction(
       area,
-      L.arrayToList(currentBlockCoord),
-      type
+      L.arrayToList(currentSrcCoord),
+      directionFromAxis
   );
 
-  const currentBlockValue = L.point(
-      currentBlockCoord[0],
-      currentBlockCoord[1],
-      area
-  );
-
-  if (currentBlockValue === A.empty()) {
-    return [];
-  }
-
-  if (nestedDirection) {
-    return find_dest_coords(
+  if (nextDirection) {
+    return find_moveInfos(
         area,
         rotateDirection,
-        L.arrayToList(currentBlockCoord),
-        nestedDirection,
-        currentMoveInfo,
-        L.arrayToList(currentDestBlockCoord)
+        nextDirection,
+        L.arrayToList(currentSrcCoord),
+        L.arrayToList(currentDestBlockCoord),
+        currentMoveInfo
     );
-  } else {
-    return currentMoveInfo;
-  }
+  } 
+
+  return currentMoveInfo;
 }
 
-function find_nested_direction(area, axisCoord, fromParentAxis) {
+function currentSrcCoordinate(axisCoordArray, directionFromAxis) {
+    return axisCoordArray.map((coord, index) => {
+      if (directionFromAxis === 'above') return index === 1 ? coord - 1 : coord;
+      if (directionFromAxis === 'right') return index === 0 ? coord + 1 : coord;
+      if (directionFromAxis === 'left') return index === 0 ? coord - 1 : coord;
+      if (directionFromAxis === 'below') return index === 1 ? coord + 1 : coord;
+      else throw new Error('invalid directionFromAxis');
+    });
+}
+
+function currentDestCoordinate(axisCoordArray, directionFromAxis, rotateDirection) {
+  return axisCoordArray.map((coord, index) => {
+      if (rotateDirection === 'right') {
+        if (directionFromAxis === 'above') return index === 0 ? coord + 1 : coord;
+        if (directionFromAxis === 'right') return index === 1 ? coord + 1 : coord;
+        if (directionFromAxis === 'left') return index === 1 ? coord - 1 : coord;
+        if (directionFromAxis === 'below') return index === 0 ? coord - 1 : coord;
+      }
+
+      if (rotateDirection === 'left') {
+        if (directionFromAxis === 'above') return index === 0 ? coord - 1 : coord;
+        if (directionFromAxis === 'right') return index === 1 ? coord - 1 : coord;
+        if (directionFromAxis === 'left') return index === 1 ? coord + 1 : coord;
+        if (directionFromAxis === 'below') return index === 0 ? coord + 1 : coord;
+      }
+    });
+}
+
+function find_next_block_direction(area, axisCoord, fromParentAxis) {
   const exceptDirection = fromParentAxis === 'above'
       ? 'below'
       : fromParentAxis === 'below'
@@ -123,13 +102,12 @@ function find_nested_direction(area, axisCoord, fromParentAxis) {
   // 각 방향을 탐색
   for (const direction of possibleDirections) {
     const [x, y] = axisArray;
-    if (direction === 'above' && L.point(x, y - 1, area) === A.active()) {
-      return direction;
-    } else if (direction === 'below' && L.point(x, y + 1, area) === A.active()) {
-      return direction;
-    } else if (direction === 'right' && L.point(x + 1, y, area) === A.active()) {
-      return direction;
-    } else if (direction === 'left' && L.point(x - 1, y, area) === A.active()) {
+    if (
+      direction === 'above' && A.is_active(L.point(x, y - 1, area)) ||
+      direction === 'below' && A.is_active(L.point(x, y + 1, area)) ||
+      direction === 'right' && A.is_active(L.point(x + 1, y, area)) || 
+      direction === 'left' && A.is_active(L.point(x - 1, y, area))
+    ) {
       return direction;
     }
   }

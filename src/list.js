@@ -102,7 +102,7 @@ export function point(x, y, list) {
   }
 }
 
-export function find_coordinate(area, n) {
+export function find_coordinate(_, n) {
   const array = listToArray(list);
   for (let i=0; i<array.length; i++) {
     for (let j=0; j<array[i].length; j++) {
@@ -119,7 +119,7 @@ export function set_point(x, y, value, list) {
 }
 
 export function move_points(list) {
-  return function dispatch(moveInfos) {
+  return function(moveInfos) {
     const deleted = moveInfos
         .map(([sourceX, sourceY]) => [sourceX, sourceY])
         .reduce((newList, [sourceX, sourceY]) => {
@@ -134,5 +134,4 @@ export function move_points(list) {
 
     return moved;
   }
-  return dispatch;
 }
