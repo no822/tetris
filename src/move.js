@@ -1,6 +1,5 @@
 import * as L from './list.js';
 import * as A from './area.js';
-import * as AD from './add.js';
 
 // moveBlock :: direction -> area
 export function moveBlock(area, direction) {
@@ -28,17 +27,15 @@ function removeActive(list) {
 
 // internal_moveBlock :: area -> xMove -> yMove -> area
 function internal_moveBlock(area, xMove, yMove) {
-  return (function recur(array, currentArea) {
-    if (array.length === 0) return currentArea;
+  return (function recur(nextCoordInfos, currentArea) {
+    if (nextCoordInfos.length === 0) return currentArea;
 
-    const [[x, y, point], ...rest] = array;
+    const [[x, y, point], ...rest] = nextCoordInfos;
     const newArea =  L.set_point(x, y, point, currentArea);
+
     return recur(rest, newArea);
-  })(AD.activeCoords(
-      AD.xyMap(
-          area,
-          xMove,
-          yMove
-      )
-  ), removeActive(area));
+  })(
+      A.activeMap(area, xMove, yMove),
+      removeActive(area)
+  );
 }

@@ -61,7 +61,6 @@ export function arrayToList(array) {
   return list(...accList);
 }
 
-
 export function copy_list(list) {
   return arrayToList(listToArray(list));
 }

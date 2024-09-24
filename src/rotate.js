@@ -2,8 +2,9 @@ import * as L from "./list.js";
 import * as A from "./area.js";
 
 // type direction = 'right' | 'left'
-// type place = 'above' | 'below' | 'right' | 'left'
-// rotateBlock :: area -> direction -> axisCoordinate -> area
+// type directionFromAxis = 'above' | 'below' | 'right' | 'left'
+// rotateBlock :: area -> direction -> axisCoordinate 
+// -> Array<[number, number, number, number[>
 export function rotateBlock(area, direction, axisCoord) {
   if (axisCoord === null) return area;
 
@@ -86,7 +87,7 @@ function currentDestCoordinate(axisCoordArray, directionFromAxis, rotateDirectio
 }
 
 function find_next_block_direction(area, axisCoord, fromParentAxis) {
-  const exceptDirection = fromParentAxis === 'above'
+  const parentBlockDirection = fromParentAxis === 'above'
       ? 'below'
       : fromParentAxis === 'below'
       ? 'above'
@@ -95,7 +96,7 @@ function find_next_block_direction(area, axisCoord, fromParentAxis) {
       : 'right';
 
   const possibleDirections = ['above', 'below', 'right', 'left']
-      .filter(i => i !== exceptDirection); // 부모의 방향은 제외
+      .filter(i => i !== parentBlockDirection); // 부모의 방향은 제외
 
   const axisArray = L.listToArray(axisCoord);
 
