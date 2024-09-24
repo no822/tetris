@@ -2,13 +2,15 @@ import * as R from './rotate.js';
 import * as A from './area.js';
 import * as L from './list.js';
 import * as B from './block.js';
+import * as M from './move.js';
+import * as AB from './add.js';
 
 describe('rotate.js', () => {
   test('Z블록 회전 테스트', () => {
     // given
     const initialArea =
-        A.moveBlock(
-            A.addNewBlock(
+        M.moveBlock(
+            AB.addNewBlock(
                 A.GameArea(),
                 B.ZBLOCK()
             ),
@@ -168,8 +170,8 @@ describe('rotate.js', () => {
   test('T블록 회전 테스트', () => {
     // given
     const initialArea =
-        A.moveBlock(
-            A.addNewBlock(
+        M.moveBlock(
+            AB.addNewBlock(
                 A.GameArea(),
                 B.TBLOCK()
             ),
@@ -330,9 +332,9 @@ describe('rotate.js', () => {
     // given
     const initialArea =
         // 다른 블럭보다 한칸 더 down
-        A.moveBlock(
-            A.moveBlock(
-                A.addNewBlock(
+        M.moveBlock(
+            M.moveBlock(
+                AB.addNewBlock(
                     A.GameArea(),
                     B.IBLOCK()
                 ),
@@ -494,8 +496,8 @@ describe('rotate.js', () => {
   test('J블록 회전 테스트', () => {
     // given
     const initialArea =
-        A.moveBlock(
-            A.addNewBlock(
+          M.moveBlock(
+            AB.addNewBlock(
                 A.GameArea(),
                 B.JBLOCK()
             ),
@@ -654,8 +656,8 @@ describe('rotate.js', () => {
   test('S블록 회전 테스트', () => {
     // given
     const initialArea =
-        A.moveBlock(
-            A.addNewBlock(
+        M.moveBlock(
+            AB.addNewBlock(
                 A.GameArea(),
                 B.SBLOCK()
             ),
@@ -815,8 +817,8 @@ describe('rotate.js', () => {
   test('L블록 회전 테스트', () => {
     // given
     const initialArea =
-        A.moveBlock(
-            A.addNewBlock(
+        M.moveBlock(
+            AB.addNewBlock(
                 A.GameArea(),
                 B.LBLOCK()
             ),
@@ -976,7 +978,7 @@ describe('rotate.js', () => {
   test('O블록 회전 테스트(회전 후 동일 좌표 유지)', () => {
     // given
     const initialArea =
-        A.addNewBlock(
+        AB.addNewBlock(
             A.GameArea(),
             B.OBLOCK()
         );
