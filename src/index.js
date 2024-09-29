@@ -36,11 +36,15 @@ import * as L from "./list.js";
 import * as B from "./block.js";
 import * as A from "./area.js";
 import * as M from "./move.js";
+import * as R from "./rotate.js";
 import * as AB from "./add.js";
+import * as RE from "./render.js";
 
-const area = M.moveBlock(
+const axisCoord = L.list(4, 1);
+const area = R.rotateBlock(
   M.moveBlock(AB.addNewBlock(A.GameArea(), B.makeRandomBlock()), "down"),
-  "up",
+  "right",
+  axisCoord,
 );
 
-console.log(L.listToArray(area));
+RE.render(area);
