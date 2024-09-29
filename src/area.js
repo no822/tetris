@@ -12,7 +12,7 @@ export function axis() {
   return 3;
 }
 
-export function is_active(n){
+export function is_active(n) {
   return n === active() || is_axis(n);
 }
 
@@ -29,24 +29,15 @@ export function activeMap(area, xMove, yMove) {
   function activeCoords(area) {
     return L.listToArray(area)
       .flat()
-      .filter(i => {
+      .filter((i) => {
         return !Number.isNaN(i);
-      })
+      });
   }
 
   function xyMap(area, x, y) {
-    return L.map(
-      area,
-      (item, xIndex, yIndex) => {
-        return !is_active(item)
-          ? NaN
-          : L.list(
-              xIndex + x,
-              yIndex + y,
-              item
-        )
-      }
-    )
+    return L.map(area, (item, xIndex, yIndex) => {
+      return !is_active(item) ? NaN : L.list(xIndex + x, yIndex + y, item);
+    });
   }
 
   return activeCoords(xyMap(area, xMove, yMove));
@@ -54,37 +45,33 @@ export function activeMap(area, xMove, yMove) {
 
 // removeActive :: list -> list
 export function removeActive(list) {
-  return L.map(
-    list,
-    (item) => {
-      if (is_active(item)) return empty();
-      return item;
-    }
-  );
+  return L.map(list, (item) => {
+    if (is_active(item)) return empty();
+    return item;
+  });
 }
 
 export function GameArea() {
   return L.list(
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0),
-    L.list(0,0,0,0,0,0,0,0,0,0)
+    L.list(0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+    L.list(0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+    L.list(0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+    L.list(0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+    L.list(0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+    L.list(0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+    L.list(0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+    L.list(0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+    L.list(0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+    L.list(0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+    L.list(0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+    L.list(0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+    L.list(0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+    L.list(0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+    L.list(0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+    L.list(0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+    L.list(0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+    L.list(0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+    L.list(0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+    L.list(0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
   );
 }
-

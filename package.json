@@ -15,7 +15,8 @@
     "jest-environment-jsdom": "^29.7.0"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test-verbose": "jest --verbose"
   },
   "dependencies": {
     "@jest/globals": "^29.7.0"

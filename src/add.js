@@ -1,20 +1,8 @@
-import * as L from './list.js';
-import * as B from './block.js';
-import * as A from './area.js';
+import * as L from "./list.js";
+import * as B from "./block.js";
+import * as A from "./area.js";
 
-export function initialCoordinate() {
-  const coordinate =  L.pair(3, 0);
-
-  return function dispatch(id){
-    return id === 'x'
-      ? L.head(coordinate)
-      : id === 'y'
-      ? L.tail(coordinate)
-      : "error";
-  };
-}
-
-// addNewBlock :: area -> block -> area
+// addNewBlock :: Area -> Block -> Area
 export function addNewBlock(area, block) {
   const blockCoordinate = B.coords(block);
   const initCoordinate = initialCoordinate();
@@ -27,11 +15,20 @@ function internal_addBlock(area, initialPoint, newBlockCoords) {
     if (nextCoordInfos.length === 0) return currentArea;
 
     const [[x, y, point], ...rest] = nextCoordInfos;
-    const newArea =  L.set_point(x, y, point, currentArea);
+    const newArea = L.set_point(x, y, point, currentArea);
 
     return recur(rest, newArea);
-  })(
-      A.activeMap(newBlockCoords, initialPoint('x'), initialPoint('y')),
-      area
-  );
+  })(A.activeMap(newBlockCoords, initialPoint("x"), initialPoint("y")), area);
+}
+
+function initialCoordinate() {
+  const coordinate = L.pair(3, 0);
+
+  return function dispatch(id) {
+    return id === "x"
+      ? L.head(coordinate)
+      : id === "y"
+        ? L.tail(coordinate)
+        : "error";
+  };
 }

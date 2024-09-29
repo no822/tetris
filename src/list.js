@@ -1,18 +1,14 @@
-import * as A from './area.js';
+import * as A from "./area.js";
 
 export function pair(x, y) {
   function dispatch(n) {
-    return n === 0
-        ? x
-        : n === 1
-        ? y
-        : "error" ;
+    return n === 0 ? x : n === 1 ? y : "error";
   }
   return dispatch;
 }
 
 export function is_pair(p) {
-  return typeof p === 'function' && head(p) !== undefined;
+  return typeof p === "function" && head(p) !== undefined;
 }
 
 export function is_null(n) {
@@ -39,8 +35,8 @@ export function list(...items) {
 export function listToArray(list) {
   if (is_null(list)) return [];
   return is_pair(head(list))
-      ? [listToArray(head(list)), ...listToArray(tail(list))]
-      : [head(list), ...listToArray(tail(list))];
+    ? [listToArray(head(list)), ...listToArray(tail(list))]
+    : [head(list), ...listToArray(tail(list))];
 }
 
 /**
@@ -88,7 +84,7 @@ export function map(list, callback) {
         return yItem.map((xItem, xIndex) => callback(xItem, xIndex, yIndex));
       }
       return callback(yItem, yIndex);
-    })
+    }),
   );
 }
 
@@ -103,8 +99,8 @@ export function point(x, y, list) {
 
 export function find_coordinate(_, n) {
   const array = listToArray(list);
-  for (let i=0; i<array.length; i++) {
-    for (let j=0; j<array[i].length; j++) {
+  for (let i = 0; i < array.length; i++) {
+    for (let j = 0; j < array[i].length; j++) {
       if (array[i][j] === n) return list(j, i);
     }
   }
@@ -118,19 +114,15 @@ export function set_point(x, y, value, list) {
 }
 
 export function move_points(list) {
-  return function(moveInfos) {
-    const deleted = moveInfos
-        .map(([sourceX, sourceY]) => [sourceX, sourceY])
-        .reduce((newList, [sourceX, sourceY]) => {
-          return set_point(sourceX, sourceY, A.empty(), newList);
-        }, list);
+  return function (moveInfos) {
+    const deleted = moveInfos.reduce((newList, [sourceX, sourceY]) => {
+      return set_point(sourceX, sourceY, A.empty(), newList);
+    }, list);
 
-    const moved = moveInfos
-        .map(([, , targetX, targetY]) =>  [targetX, targetY])
-        .reduce((deletedNewList, [targetX, targetY]) => {
-          return set_point(targetX, targetY, A.active(), deletedNewList);
-        }, deleted);
+    const moved = moveInfos.reduce((deletedNewList, [, , targetX, targetY]) => {
+      return set_point(targetX, targetY, A.active(), deletedNewList);
+    }, deleted);
 
     return moved;
-  }
+  };
 }
