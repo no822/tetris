@@ -43,6 +43,6 @@ function newCell(value) {
   newCell.style.height = cell + "px";
   newCell.style.border = "1px solid black";
   newCell.textContent = value;
-  if (value !== 0) newCell.style.background = "red";
+  if (value !== 0) newCell.style.background = "blue";
   return newCell;
 }

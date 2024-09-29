@@ -1,8 +1,8 @@
 {
   "name": "tetris",
-  "type": "module",
+  "type": "commonjs",
   "version": "1.0.0",
-  "main": "src/index.js",
+  "main": "src/app.js",
   "author": "",
   "license": "ISC",
   "description": "",
@@ -15,10 +15,13 @@
     "jest-environment-jsdom": "^29.7.0"
   },
   "scripts": {
+    "start": "nodemon ./src/app.js",
     "test": "jest",
     "test-verbose": "jest --verbose"
   },
   "dependencies": {
-    "@jest/globals": "^29.7.0"
+    "@jest/globals": "^29.7.0",
+    "express": "^4.21.0",
+    "nodemon": "^3.1.7"
   }
 }
