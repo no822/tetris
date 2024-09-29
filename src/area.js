@@ -24,6 +24,10 @@ export function is_axis(n) {
   return n === axis();
 }
 
+export function axis_coord(area) {
+  return L.find_coordinate(area, axis());
+}
+
 // activeMap :: area -> x -> y -> Array<[number, number, number]>
 export function activeMap(area, xMove, yMove) {
   function activeCoords(area) {

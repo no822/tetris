@@ -9,7 +9,7 @@ export function addNewBlock(area, block) {
   return internal_addBlock(area, initCoordinate, blockCoordinate);
 }
 
-// addBlock :: area -> point -> blockCoords -> area
+// addBlock :: Area -> point -> blockCoords -> Area
 function internal_addBlock(area, initialPoint, newBlockCoords) {
   return (function recur(nextCoordInfos, currentArea) {
     if (nextCoordInfos.length === 0) return currentArea;

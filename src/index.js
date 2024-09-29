@@ -1,5 +1,5 @@
 // <요구사항 정리>
-// 진척도: 21% (4/19 * 100)
+// 진척도: 42% (8/19 * 100)
 
 // - 구성요소들
 // [x] 7종류의 블럭들: 블럭 종류, 색상
@@ -23,28 +23,45 @@
 // [ ] 게임오버
 
 // - UI
-// [ ] Area
-// [ ] Block
-// [ ] Point
+// [x] Area
+// [x] Block
+// [x] Point
 // [ ] Next Blocks
 // [ ] Game Over
 
 /// - Interaction
-// [ ] 유저 인풋 이벤트 핸들러
+// [x] 유저 인풋 이벤트 핸들러
 
-import * as L from "./list.js";
 import * as B from "./block.js";
 import * as A from "./area.js";
-import * as M from "./move.js";
-import * as R from "./rotate.js";
 import * as AB from "./add.js";
 import * as RE from "./render.js";
+import * as C from "./collider.js";
 
-const axisCoord = L.list(4, 1);
-const area = R.rotateBlock(
-  M.moveBlock(AB.addNewBlock(A.GameArea(), B.makeRandomBlock()), "down"),
-  "right",
-  axisCoord,
-);
+const block = B.makeRandomBlock();
+const blockColor = B.color(block);
 
-RE.render(area);
+let area = AB.addNewBlock(A.GameArea(), block);
+let axisCoord = A.axis_coord(area);
+
+// TODO 임시 구현. 모듈 분리 필요
+document.addEventListener("keydown", (e) => {
+  console.log(e.key);
+  if (e.key === "ArrowLeft") {
+    area = C.move_collider(area, "left");
+  } else if (e.key === "ArrowRight") {
+    area = C.move_collider(area, "right");
+  } else if (e.key === "ArrowDown") {
+    area = C.move_collider(area, "down");
+  } else if (e.key === "ArrowUp") {
+    area = C.move_collider(area, "up");
+  } else if (e.key === "d") {
+    area = C.rotate_collider(area, "right", axisCoord);
+  }
+
+  axisCoord = A.axis_coord(area);
+  RE.clear();
+  RE.render(area, blockColor);
+});
+
+RE.render(area, blockColor);

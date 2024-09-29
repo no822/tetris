@@ -43,4 +43,5 @@ function is_collide(beforeArea, afterArea) {
   // - 영역을 넘어갔을 때
   // - 안착한 블럭과 충돌했을때
   // A.active() 4개 있는지 여부 탐색
+  return false;
 }

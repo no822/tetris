@@ -97,11 +97,13 @@ export function point(x, y, list) {
   }
 }
 
-export function find_coordinate(_, n) {
-  const array = listToArray(list);
+export function find_coordinate(l, n) {
+  const array = listToArray(l);
   for (let i = 0; i < array.length; i++) {
     for (let j = 0; j < array[i].length; j++) {
-      if (array[i][j] === n) return list(j, i);
+      if (array[i][j] === n) {
+        return list(j, i);
+      }
     }
   }
   return null;

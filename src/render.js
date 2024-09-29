@@ -1,24 +1,36 @@
 import * as L from "./list.js";
 
-const cell = 50;
+const cellWidth = 50;
 
 const areaWidthLength = 10;
 const areaHeightLength = 20;
 
-const areaWidth = cell * areaWidthLength;
-const areaHeightght = cell * areaHeightLength;
+const areaWidth = cellWidth * areaWidthLength;
+const areaHeightght = cellWidth * areaHeightLength;
+
+const containerClass = "container";
+
+export function clear() {
+  const gameAreaContainer = document.querySelector("." + containerClass);
+  if (gameAreaContainer) {
+    gameAreaContainer.remove();
+  }
+}
 
 // render :: Area -> void
-export function render(area) {
+export function render(area, blockColor) {
   const areaList = L.listToArray(area);
-  const areaContainer = gameAreaContainer();
   const body = document.querySelector("body");
+  body.style.display = "flex";
+  body.style.justifyContent = "center";
+  body.style.alignItems = "center";
 
+  const areaContainer = gameAreaContainer();
   for (let y = 0; y < areaList.length; y++) {
     for (let x = 0; x < areaList[y].length; x++) {
       const axisValue = areaList[y][x];
-      const cell = newCell(axisValue);
-      areaContainer.append(cell);
+      const newCell = cell(axisValue, blockColor);
+      areaContainer.append(newCell);
     }
   }
 
@@ -27,6 +39,7 @@ export function render(area) {
 
 function gameAreaContainer() {
   const gameAreaContainer = document.createElement("div");
+  gameAreaContainer.classList.add(containerClass);
   gameAreaContainer.style.width = "100%";
   gameAreaContainer.style.gap = 0;
   gameAreaContainer.style.display = "grid";
@@ -37,12 +50,12 @@ function gameAreaContainer() {
   return gameAreaContainer;
 }
 
-function newCell(value) {
+function cell(value, color) {
   const newCell = document.createElement("div");
-  newCell.style.width = cell + "px";
-  newCell.style.height = cell + "px";
+  newCell.style.width = cellWidth + "px";
+  newCell.style.height = cellWidth + "px";
   newCell.style.border = "1px solid black";
   newCell.textContent = value;
-  if (value !== 0) newCell.style.background = "blue";
+  if (value !== 0) newCell.style.background = color;
   return newCell;
 }
