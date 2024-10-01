@@ -56,6 +56,9 @@ function cell(value, color) {
   newCell.style.height = cellWidth + "px";
   newCell.style.border = "1px solid black";
   newCell.textContent = value;
-  if (value !== 0) newCell.style.background = color;
+  if (value !== 0) {
+    newCell.style.background = color;
+    newCell.style.outline = "2.3px solid black";
+  }
   return newCell;
 }

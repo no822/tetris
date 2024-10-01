@@ -77,7 +77,7 @@ export const ZBLOCK = function () {
   return L.list(
     "GRAY",
     L.list(
-      L.list(0, 2, 3, 0),
+      L.list(0, 3, 2, 0),
       L.list(2, 2, 0, 0),
       L.list(0, 0, 0, 0),
       L.list(0, 0, 0, 0),

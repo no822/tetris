@@ -28,7 +28,8 @@ export function axis_coord(area) {
   return L.find_coordinate(area, axis());
 }
 
-// activeMap :: area -> x -> y -> Array<[number, number, number]>
+// MoveInfo :: [x, y, point]
+// activeMap :: area -> x -> y -> Array<MoveInfo>
 export function activeMap(area, xMove, yMove) {
   function activeCoords(area) {
     return L.listToArray(area)

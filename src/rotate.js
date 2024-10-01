@@ -7,18 +7,18 @@ import * as A from "./area.js";
 export function rotateBlock(area, direction, axisCoord) {
   if (axisCoord === null) return area;
 
-  const above = find_moveInfos(area, direction, "above", axisCoord);
-  const right = find_moveInfos(area, direction, "right", axisCoord);
-  const left = find_moveInfos(area, direction, "left", axisCoord);
-  const below = find_moveInfos(area, direction, "below", axisCoord);
+  const above = find_rotateInfos(area, direction, "above", axisCoord);
+  const right = find_rotateInfos(area, direction, "right", axisCoord);
+  const left = find_rotateInfos(area, direction, "left", axisCoord);
+  const below = find_rotateInfos(area, direction, "below", axisCoord);
 
   const movePoints = L.move_points(area);
   return movePoints([...above, ...right, ...left, ...below]);
 }
 
-// find_moveInfos :: area, directionFromAxis, currentAxisCoord, nextAxisCoord, accMoveInfo
+// find_rotateInfos:: area, directionFromAxis, currentAxisCoord, nextAxisCoord, accMoveInfo
 // -> Array<[number, number, number, number]>
-function find_moveInfos(
+function find_rotateInfos(
   area,
   rotateDirection,
   directionFromAxis,
@@ -58,7 +58,7 @@ function find_moveInfos(
   );
 
   if (nextDirection) {
-    return find_moveInfos(
+    return find_rotateInfos(
       area,
       rotateDirection,
       nextDirection,
