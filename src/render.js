@@ -1,4 +1,5 @@
 import * as L from "./list.js";
+import * as A from "./area.js";
 
 const cellWidth = 50;
 
@@ -56,7 +57,7 @@ function cell(value, color) {
   newCell.style.height = cellWidth + "px";
   newCell.style.border = "1px solid black";
   newCell.textContent = value;
-  if (value !== 0) {
+  if (!A.is_empty(value)) {
     newCell.style.background = color;
     newCell.style.outline = "2.3px solid black";
   }

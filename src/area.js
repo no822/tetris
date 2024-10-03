@@ -4,6 +4,10 @@ export function empty() {
   return 0;
 }
 
+export function inactive() {
+  return 1;
+}
+
 export function active() {
   return 2;
 }
@@ -12,12 +16,16 @@ export function axis() {
   return 3;
 }
 
-export function is_active(n) {
-  return n === active() || is_axis(n);
-}
-
 export function is_empty(n) {
   return n === empty();
+}
+
+export function is_inactive(n) {
+  return n === inactive();
+}
+
+export function is_active(n) {
+  return n === active() || is_axis(n);
 }
 
 export function is_axis(n) {

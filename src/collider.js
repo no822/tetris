@@ -6,9 +6,14 @@ import * as A from "./area.js";
 
 // addNewBlock :: (Area -> Block) -> Area
 // add_collider :: (Area, Block) -> Area
-export function add_collider(area, block) {
+export function add_collider(area, block, gameOver) {
   const areaAfterAdd = AD.addNewBlock(area, block);
-  return is_collide(areaAfterAdd) ? area : areaAfterAdd;
+  if (is_collide(areaAfterAdd)) {
+    gameOver();
+    return afea;
+  }
+
+  return areaAfterAdd;
 }
 
 // moveBlock :: (Area -> Direction) -> Area
