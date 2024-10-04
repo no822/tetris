@@ -8,9 +8,10 @@ import * as A from "./area.js";
 // add_collider :: (Area, Block) -> Area
 export function add_collider(area, block, gameOver) {
   const areaAfterAdd = AD.addNewBlock(area, block);
-  if (is_collide(areaAfterAdd)) {
+  if (is_collide_boundary(areaAfterAdd)) return area;
+  if (is_already_block(area, areaAfterAdd)) {
     gameOver();
-    return afea;
+    return A.GameArea();
   }
 
   return areaAfterAdd;
@@ -20,26 +21,97 @@ export function add_collider(area, block, gameOver) {
 // move_collider :: (Area, Direction) -> Area
 export function move_collider(area, direction) {
   const areaAfterMove = M.moveBlock(area, direction);
-  return is_collide(areaAfterMove) ? area : areaAfterMove;
+  if (is_collide_boundary(areaAfterMove)) return area;
+  if (is_collide_before_move(area, direction)) return area;
+  return areaAfterMove;
 }
 
 // rotateBlock :: (Area -> Direction -> Coord) -> Area
 // rotate_collider :: (Area, Direction, Coords) -> Area
 export function rotate_collider(area, direction, axisCoord) {
   const areaAfterRotate = R.rotateBlock(area, direction, axisCoord);
-  return is_collide(areaAfterRotate) ? area : areaAfterRotate;
+  if (is_collide_boundary(areaAfterRotate)) return area;
+  return areaAfterRotate;
 }
 
-// is_collide :: Area -> boolean
-function is_collide(afterArea) {
+// is_collide_boundary :: Area -> boolean
+function is_collide_boundary(afterArea) {
   const listArea = L.listToArray(afterArea);
 
+  // x축 범위 벗어난 경우
   const activeBlockValues = listArea.flat().filter((n) => A.is_active(n));
   if (activeBlockValues.length !== 4) return true;
 
+  // y축 범위 벗어난 경우
   const isCollectX = listArea.every((x) => x.length === 10);
   const isCollectY = listArea.length === 20;
   if (!isCollectX || !isCollectY) return true;
+
+  return false;
+}
+
+// is_collide_before_move :: (Area, Direction) -> boolean
+function is_collide_before_move(beforeArea, direction) {
+  function filter_current_coords(coords, currentCoords) {
+    return coords.filter((coord) => {
+      return (
+        currentCoords.find((c) => c[0] === coord[0] && c[1] && coord[1]) ===
+        undefined
+      );
+    });
+  }
+
+  const currentActiveCoords = A.find_active_coords(beforeArea);
+  if (direction === "up") true;
+  if (direction === "right") {
+    const rightBlockCoords = filter_current_coords(
+      currentActiveCoords.map(([x, y]) => {
+        return [x + 1, y];
+      }),
+      currentActiveCoords,
+    );
+
+    for (let i = 0; i < rightBlockCoords.length; i++) {
+      const [x, y] = rightBlockCoords[i];
+      const targetPoint = L.point(x, y, beforeArea);
+      if (A.is_inactive(targetPoint) || targetPoint === null) {
+        return true;
+      }
+    }
+  }
+
+  if (direction === "left") {
+    const leftBlockCoords = filter_current_coords(
+      currentActiveCoords.map(([x, y]) => {
+        return [x - 1, y];
+      }),
+      currentActiveCoords,
+    );
+
+    for (let i = 0; i < leftBlockCoords.length; i++) {
+      const [x, y] = leftBlockCoords[i];
+      const targetPoint = L.point(x, y, beforeArea);
+      if (A.is_inactive(targetPoint) || targetPoint === null) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function is_already_block(beforeArea, afterArea) {
+  // afterArea 에서 active_coords 탐색(afterActiveCoord)
+  const afterActiveCoord = A.find_active_coords(afterArea);
+  // beforeArea 에서 afterActiveCoord 에 해당하는 좌표의 값을 탐색
+  const beforeInactiveCoord = afterActiveCoord.map(([x, y]) => {
+    return L.point(x, y, beforeArea);
+  });
+
+  // 해당 값에 inActive 값이 하나라도 있다면 true
+  for (let i = 0; i < beforeInactiveCoord.length; i++) {
+    if (A.is_inactive(beforeInactiveCoord[i])) return true;
+  }
 
   return false;
 }

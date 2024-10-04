@@ -16,8 +16,16 @@ export function rotateBlock(area, direction, axisCoord) {
   return movePoints([...above, ...right, ...left, ...below]);
 }
 
-// find_rotateInfos:: area, directionFromAxis, currentAxisCoord, nextAxisCoord, accMoveInfo
-// -> Array<[number, number, number, number]>
+/*
+find_rotateInfos::
+(
+area,
+directionFromAxis,
+currentAxisCoord,
+nextAxisCoord,
+accMoveInfo
+) -> Array<[number, number, number, number]>
+*/
 function find_rotateInfos(
   area,
   rotateDirection,

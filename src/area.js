@@ -64,6 +64,21 @@ export function removeActive(list) {
   });
 }
 
+export function find_active_coords(area) {
+  const list = L.listToArray(area);
+  const coords = [];
+
+  for (let y = 0; y < list.length; y++) {
+    for (let x = 0; x < list[y].length; x++) {
+      if (is_active(list[y][x])) {
+        coords.push([x, y]);
+      }
+    }
+  }
+
+  return coords;
+}
+
 export function GameArea() {
   return L.list(
     L.list(0, 0, 0, 0, 0, 0, 0, 0, 0, 0),

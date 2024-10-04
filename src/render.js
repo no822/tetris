@@ -25,6 +25,8 @@ export function render(area, blockColor) {
   body.style.display = "flex";
   body.style.justifyContent = "center";
   body.style.alignItems = "center";
+  body.style.margin = "0px";
+  body.style.height = "100vh";
 
   const areaContainer = gameAreaContainer();
   for (let y = 0; y < areaList.length; y++) {

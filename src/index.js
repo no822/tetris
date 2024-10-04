@@ -1,5 +1,5 @@
 // <요구사항 정리>
-// 진척도: 52% (13/25 * 100)
+// 진척도: 58% (14/24 * 100)
 
 // - 구성요소들
 
@@ -25,7 +25,7 @@
 // [ ] 점수 manager
 // [ ] 다음 블럭
 // [ ] 난이도(블럭 스피드, 점수 상승 공식)
-// [ ] 게임오버
+// [x] 게임오버
 
 // - UI
 // [x] Area
@@ -40,8 +40,7 @@
 // - Advanced
 // [ ] 블럭 착지 지점 표시 피드백
 // [ ] super rotation system 적용
-// [ ] wall kick 구현
-// [ ] 가장자리에서 회전시 블록 보정
+// [ ] wall kick(가장자리에서 회전시 블록 보정) 구현
 
 import * as B from "./block.js";
 import * as A from "./area.js";
@@ -67,8 +66,6 @@ document.addEventListener("keydown", (e) => {
     area = LD.landing(C.move_collider(area, "right"), B.makeRandomBlock());
   } else if (e.key === "k") {
     area = LD.landing(C.move_collider(area, "down"), B.makeRandomBlock());
-  } else if (e.key === "i") {
-    area = LD.landing(C.move_collider(area, "up"), B.makeRandomBlock());
   } else if (e.key === "f") {
     area = C.rotate_collider(area, "right", axisCoord);
   } else if (e.key === "d") {
