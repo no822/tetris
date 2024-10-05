@@ -4,8 +4,24 @@ export function empty() {
   return 0;
 }
 
-export function inactive() {
-  return 1;
+export function inactiveColor(n) {
+  if (n === 1) return "blue";
+  if (n === 11) return "orange";
+  if (n === 21) return "yellow";
+  if (n === 31) return "limegreen";
+  if (n === 41) return "red";
+  if (n === 51) return "purple";
+  else return "cyan";
+}
+
+export function inactive(color) {
+  if (color === "blue") return 1;
+  if (color === "orange") return 11;
+  if (color === "yellow") return 21;
+  if (color === "limegreen") return 31;
+  if (color === "red") return 41;
+  if (color === "purple") return 51;
+  else return 61;
 }
 
 export function active() {
@@ -21,7 +37,15 @@ export function is_empty(n) {
 }
 
 export function is_inactive(n) {
-  return n === inactive();
+  return (
+    n === inactive("blue") ||
+    n === inactive("orange") ||
+    n === inactive("yellow") ||
+    n === inactive("limegreen") ||
+    n === inactive("red") ||
+    n === inactive("purple") ||
+    n === inactive("cyan")
+  );
 }
 
 export function is_active(n) {
@@ -77,6 +101,14 @@ export function find_active_coords(area) {
   }
 
   return coords;
+}
+
+// fix_landing_block :: (Area, currentBlockColor) -> Area
+export function fix_landing_block(area, currentBlockColor) {
+  return L.map(area, (i) => {
+    if (is_active(i)) return inactive(currentBlockColor);
+    return i;
+  });
 }
 
 export function GameArea() {

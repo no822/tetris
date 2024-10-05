@@ -1,23 +1,20 @@
 import * as L from "./list.js";
 import * as A from "./area.js";
-import * as AD from "./add.js";
 import * as C from "./collider.js";
+import * as B from "./block.js";
 
 // landing :: Area -> Area
-export function landing(area, newBlock) {
-  if (!is_landing(area)) return area;
-  return C.add_collider(activeToInactive(area), newBlock, () =>
-    alert("game over"),
+export function landing(area, currentColor, setNewColor) {
+  if (!is_landing(area)) {
+    return area;
+  }
+  const nextBlock = B.makeRandomBlock();
+  setNewColor(B.color(nextBlock));
+  return C.add_collider(
+    A.fix_landing_block(area, currentColor),
+    nextBlock,
+    () => alert("game over"),
   );
-  // return AD.addNewBlock(activeToInactive(area), newBlock);
-}
-
-// activeToInactive :: Area -> Area
-function activeToInactive(area) {
-  return L.map(area, (i) => {
-    if (A.is_active(i)) return A.inactive();
-    return i;
-  });
 }
 
 // is_landing :: Area -> boolean

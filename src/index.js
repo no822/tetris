@@ -1,13 +1,13 @@
 // <요구사항 정리>
-// 진척도: 58% (14/24 * 100)
+// 진척도: 60% (15/25 * 100)
 
 // - 구성요소들
-
 // [x] 7종류의 블럭들: 블럭 종류, 색상
 // [x] 10 * 20 의 게임 영역
 
 // - 블럭관련기능
 // [x] 블럭 생성
+// [x] 블럭 색상 설정
 // [x] 블록 움직임(상하좌우, 회전)
 
 // - 경계충돌(Area 상하좌우, 안착한 블럭)
@@ -50,22 +50,38 @@ import * as C from "./collider.js";
 import * as LD from "./landing.js";
 
 // TODO 초기 세팅 코드 모듈 분리
-const block = B.makeRandomBlock();
-const blockColor = B.color(block);
+const initialBlock = B.makeRandomBlock();
+const initialBlockColor = B.color(initialBlock);
 
-let area = AB.addNewBlock(A.GameArea(), block);
-RE.render(area, blockColor);
+let area = AB.addNewBlock(A.GameArea(), initialBlock);
+let currentBlockColor = initialBlockColor;
+RE.render(area, initialBlockColor);
 
 // TODO 임시 구현. 모듈 분리
 document.addEventListener("keydown", (e) => {
   const axisCoord = A.axis_coord(area);
+  function set_current_block_color(color) {
+    currentBlockColor = color;
+  }
 
   if (e.key === "j") {
-    area = LD.landing(C.move_collider(area, "left"), B.makeRandomBlock());
+    area = LD.landing(
+      C.move_collider(area, "left"),
+      currentBlockColor,
+      set_current_block_color,
+    );
   } else if (e.key === "l") {
-    area = LD.landing(C.move_collider(area, "right"), B.makeRandomBlock());
+    area = LD.landing(
+      C.move_collider(area, "right"),
+      currentBlockColor,
+      set_current_block_color,
+    );
   } else if (e.key === "k") {
-    area = LD.landing(C.move_collider(area, "down"), B.makeRandomBlock());
+    area = LD.landing(
+      C.move_collider(area, "down"),
+      currentBlockColor,
+      set_current_block_color,
+    );
   } else if (e.key === "f") {
     area = C.rotate_collider(area, "right", axisCoord);
   } else if (e.key === "d") {
@@ -73,5 +89,5 @@ document.addEventListener("keydown", (e) => {
   }
 
   RE.clear();
-  RE.render(area, blockColor);
+  RE.render(area, currentBlockColor);
 });

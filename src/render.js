@@ -19,7 +19,7 @@ export function clear() {
 }
 
 // render :: Area -> void
-export function render(area, blockColor) {
+export function render(area, activeBlockColor) {
   const areaList = L.listToArray(area);
   const body = document.querySelector("body");
   body.style.display = "flex";
@@ -32,7 +32,7 @@ export function render(area, blockColor) {
   for (let y = 0; y < areaList.length; y++) {
     for (let x = 0; x < areaList[y].length; x++) {
       const axisValue = areaList[y][x];
-      const newCell = cell(axisValue, blockColor);
+      const newCell = cell(axisValue, activeBlockColor);
       areaContainer.append(newCell);
     }
   }
@@ -53,15 +53,22 @@ function gameAreaContainer() {
   return gameAreaContainer;
 }
 
-function cell(value, color) {
+function cell(value, currentColor) {
   const newCell = document.createElement("div");
   newCell.style.width = cellWidth + "px";
   newCell.style.height = cellWidth + "px";
   newCell.style.border = "1px solid black";
   newCell.textContent = value;
-  if (!A.is_empty(value)) {
-    newCell.style.background = color;
+
+  if (A.is_active(value)) {
+    newCell.style.background = currentColor;
     newCell.style.outline = "2.3px solid black";
   }
+
+  if (A.is_inactive(value)) {
+    newCell.style.background = A.inactiveColor(value);
+    newCell.style.outline = "2.3px solid black";
+  }
+
   return newCell;
 }
