@@ -1,10 +1,12 @@
-var express = require("express");
-var app = express();
+const express = require("express");
+const path = require("path");
 
-app.use(express.static("src"));
-// respond with "hello world" when a GET request is made to the homepage
+const app = express();
+
+app.use(express.static(path.join(__dirname)));
+
 app.get("/", function (req, res) {
-  res.send("hello world");
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 app.listen(3000, () => {

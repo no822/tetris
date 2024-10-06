@@ -1,5 +1,5 @@
 // <요구사항 정리>
-// 진척도: 60% (15/25 * 100)
+// 진척도: 61% (16/26 * 100)
 
 // - 구성요소들
 // [x] 7종류의 블럭들: 블럭 종류, 색상
@@ -36,8 +36,16 @@
 
 /// - Interaction
 // [x] 유저 인풋 이벤트 핸들러
+// [x] 하드 드롭
 
-// - Advanced
+//  - bugfix
+// [ ] landing 로직 수정(아래로 한번 더 움직였을때 발동하도록 변경)
+// [ ] 블록 회전시 충돌한 경우 대응
+
+//  - etc
+// [ ] wall kick(가장자리에서 회전시 블록 보정) 구현
+
+// - Advanced(todo 카운팅에서는 제외)
 // [ ] 블럭 착지 지점 표시 피드백
 // [ ] super rotation system 적용
 // [ ] wall kick(가장자리에서 회전시 블록 보정) 구현
@@ -64,6 +72,7 @@ document.addEventListener("keydown", (e) => {
     currentBlockColor = color;
   }
 
+  console.log(e.key);
   if (e.key === "j") {
     area = LD.landing(
       C.move_collider(area, "left"),
@@ -82,6 +91,14 @@ document.addEventListener("keydown", (e) => {
       currentBlockColor,
       set_current_block_color,
     );
+  } else if (e.key === "Enter") {
+    for (let i = 0; i < 20; i++) {
+      area = LD.landing(
+        C.move_collider(area, "down"),
+        currentBlockColor,
+        set_current_block_color,
+      );
+    }
   } else if (e.key === "f") {
     area = C.rotate_collider(area, "right", axisCoord);
   } else if (e.key === "d") {
