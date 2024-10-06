@@ -4,14 +4,21 @@ import * as C from "./collider.js";
 import * as B from "./block.js";
 
 // landing :: Area -> Area
-export function landing(area, currentColor, setNewColor) {
-  if (!is_landing(area)) {
-    return area;
+export function landing(
+  areaBeforeMove,
+  areaAfterMove,
+  currentColor,
+  setNewColor,
+) {
+  if (!is_landing(areaBeforeMove)) {
+    return areaAfterMove;
   }
+
   const nextBlock = B.makeRandomBlock();
   setNewColor(B.color(nextBlock));
+
   return C.add_collider(
-    A.fix_landing_block(area, currentColor),
+    A.fix_landing_block(areaBeforeMove, currentColor),
     nextBlock,
     () => alert("game over"),
   );
@@ -19,13 +26,10 @@ export function landing(area, currentColor, setNewColor) {
 
 // is_landing :: Area -> boolean
 function is_landing(area) {
-  const currentActiveCoords = A.find_active_coords(area);
-  const targetBlockCoords = currentActiveCoords.map(([x, y]) => {
-    return [x, y + 1];
-  });
+  const coordAfterDown = A.find_active_coords(area).map(([x, y]) => [x, y + 1]);
 
-  for (let i = 0; i < targetBlockCoords.length; i++) {
-    const [x, y] = targetBlockCoords[i];
+  for (let i = 0; i < coordAfterDown.length; i++) {
+    const [x, y] = coordAfterDown[i];
     const targetPoint = L.point(x, y, area);
     if (A.is_inactive(targetPoint) || targetPoint === null) {
       return true;

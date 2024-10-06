@@ -43,13 +43,11 @@ export function render(area, activeBlockColor) {
 function gameAreaContainer() {
   const gameAreaContainer = document.createElement("div");
   gameAreaContainer.classList.add(containerClass);
-  gameAreaContainer.style.width = "100%";
   gameAreaContainer.style.gap = 0;
   gameAreaContainer.style.display = "grid";
   gameAreaContainer.style.gridTemplateColumns = `repeat(${areaWidthLength}, 1fr)`;
   gameAreaContainer.style.gridTemplateRows = `repeat(${areaHeightLength}, 1fr)`;
-  gameAreaContainer.style.width = areaWidth + "px";
-  gameAreaContainer.style.height = areaHeightght + "px";
+  gameAreaContainer.style.border = "2px solid black";
   return gameAreaContainer;
 }
 
@@ -58,16 +56,14 @@ function cell(value, currentColor) {
   newCell.style.width = cellWidth + "px";
   newCell.style.height = cellWidth + "px";
   newCell.style.border = "1px solid black";
-  newCell.textContent = value;
+  newCell.textContent = value; // for debug
 
   if (A.is_active(value)) {
     newCell.style.background = currentColor;
-    newCell.style.outline = "2.3px solid black";
   }
 
   if (A.is_inactive(value)) {
     newCell.style.background = A.inactiveColor(value);
-    newCell.style.outline = "2.3px solid black";
   }
 
   return newCell;

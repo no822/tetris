@@ -110,9 +110,13 @@ export function find_coordinate(l, n) {
 }
 
 export function set_point(x, y, value, list) {
-  const targetList = listToArray(list);
-  targetList[y][x] = value;
-  return arrayToList(targetList);
+  try {
+    const targetList = listToArray(list);
+    targetList[y][x] = value;
+    return arrayToList(targetList);
+  } catch {
+    return list;
+  }
 }
 
 export function move_points(list) {

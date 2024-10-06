@@ -19,11 +19,11 @@ export function rotateBlock(area, direction, axisCoord) {
 /*
 find_rotateInfos::
 (
-area,
-directionFromAxis,
-currentAxisCoord,
-nextAxisCoord,
-accMoveInfo
+  area,
+  directionFromAxis,
+  currentAxisCoord,
+  nextAxisCoord,
+  accMoveInfo
 ) -> Array<[number, number, number, number]>
 */
 function find_rotateInfos(
@@ -47,6 +47,7 @@ function find_rotateInfos(
     directionFromAxis,
     rotateDirection,
   );
+
   const currentMoveInfo = [
     ...accMoveInfo,
     [...currentSrcCoord, ...currentDestBlockCoord],
@@ -57,6 +58,7 @@ function find_rotateInfos(
     currentSrcCoord[1],
     area,
   );
+
   if (currentBlockValue === A.empty()) return [];
 
   const nextDirection = find_next_block_direction(

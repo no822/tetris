@@ -1,7 +1,8 @@
 // <요구사항 정리>
-// 진척도: 61% (16/26 * 100)
+// 진척도: 60% (17/28 * 100)
 
-// - 구성요소들
+// -----------------------
+// <기능>
 // [x] 7종류의 블럭들: 블럭 종류, 색상
 // [x] 10 * 20 의 게임 영역
 
@@ -34,21 +35,28 @@
 // [ ] Next Blocks
 // [ ] Game Over
 
-/// - Interaction
+// - Control
 // [x] 유저 인풋 이벤트 핸들러
 // [x] 하드 드롭
 
-//  - bugfix
-// [ ] landing 로직 수정(아래로 한번 더 움직였을때 발동하도록 변경)
-// [ ] 블록 회전시 충돌한 경우 대응
-
 //  - etc
 // [ ] wall kick(가장자리에서 회전시 블록 보정) 구현
-
-// - Advanced(todo 카운팅에서는 제외)
 // [ ] 블럭 착지 지점 표시 피드백
-// [ ] super rotation system 적용
-// [ ] wall kick(가장자리에서 회전시 블록 보정) 구현
+
+// -----------------------
+//  <버그픽스>
+// [x] landing 로직 수정(아래로 한번 더 움직였을때 발동하도록 변경)
+// [ ] 좌우 충돌 특정 경우에 제대로 작동하지 않는 문제
+// [ ] 블록 회전시 충돌한 경우 대응
+// [ ] 버그 관련 테스트 코드 보완
+
+// -----------------------
+// <Advanced> (todo 카운팅에서는 제외)
+//   - 블럭 착지 지점 표시 피드백
+//   - super rotation system 적용
+//   - wall kick(가장자리에서 회전시 블록 보정) 구현
+//   - 렌더링 최적화
+//   - 다양한 렌더러 구현
 
 import * as B from "./block.js";
 import * as A from "./area.js";
@@ -63,7 +71,7 @@ const initialBlockColor = B.color(initialBlock);
 
 let area = AB.addNewBlock(A.GameArea(), initialBlock);
 let currentBlockColor = initialBlockColor;
-RE.render(area, initialBlockColor);
+RE.render(area, currentBlockColor);
 
 // TODO 임시 구현. 모듈 분리
 document.addEventListener("keydown", (e) => {
@@ -72,28 +80,22 @@ document.addEventListener("keydown", (e) => {
     currentBlockColor = color;
   }
 
-  console.log(e.key);
   if (e.key === "j") {
-    area = LD.landing(
-      C.move_collider(area, "left"),
-      currentBlockColor,
-      set_current_block_color,
-    );
+    area = C.move_collider(area, "left");
   } else if (e.key === "l") {
-    area = LD.landing(
-      C.move_collider(area, "right"),
-      currentBlockColor,
-      set_current_block_color,
-    );
+    area = C.move_collider(area, "right");
   } else if (e.key === "k") {
     area = LD.landing(
+      area,
       C.move_collider(area, "down"),
       currentBlockColor,
       set_current_block_color,
     );
   } else if (e.key === "Enter") {
+    // hard drop
     for (let i = 0; i < 20; i++) {
       area = LD.landing(
+        area,
         C.move_collider(area, "down"),
         currentBlockColor,
         set_current_block_color,

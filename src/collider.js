@@ -11,7 +11,7 @@ export function add_collider(area, block, gameOver) {
   if (is_collide_boundary(areaAfterAdd)) return area;
   if (is_already_block(area, areaAfterAdd)) {
     gameOver();
-    return A.GameArea();
+    return area;
   }
 
   return areaAfterAdd;
@@ -63,6 +63,7 @@ function is_collide_before_move(beforeArea, direction) {
 
   const currentActiveCoords = A.find_active_coords(beforeArea);
   if (direction === "up") true;
+
   if (direction === "right") {
     const rightBlockCoords = filter_current_coords(
       currentActiveCoords.map(([x, y]) => {
@@ -101,16 +102,14 @@ function is_collide_before_move(beforeArea, direction) {
 }
 
 function is_already_block(beforeArea, afterArea) {
-  // afterArea 에서 active_coords 탐색(afterActiveCoord)
-  const afterActiveCoord = A.find_active_coords(afterArea);
-  // beforeArea 에서 afterActiveCoord 에 해당하는 좌표의 값을 탐색
-  const beforeInactiveCoord = afterActiveCoord.map(([x, y]) => {
-    return L.point(x, y, beforeArea);
-  });
+  const afterActiveCoordInBeforeArea = A.find_active_coords(afterArea).map(
+    ([x, y]) => {
+      return L.point(x, y, beforeArea);
+    },
+  );
 
-  // 해당 값에 inActive 값이 하나라도 있다면 true
-  for (let i = 0; i < beforeInactiveCoord.length; i++) {
-    if (A.is_inactive(beforeInactiveCoord[i])) return true;
+  for (let i = 0; i < afterActiveCoordInBeforeArea.length; i++) {
+    if (A.is_inactive(afterActiveCoordInBeforeArea[i])) return true;
   }
 
   return false;
