@@ -23,6 +23,8 @@ export function move_collider(area, direction) {
   const areaAfterMove = M.moveBlock(area, direction);
   if (is_collide_boundary(areaAfterMove)) return area;
   if (is_collide_before_move(area, direction)) return area;
+  if (is_already_block(area, areaAfterMove)) return area;
+
   return areaAfterMove;
 }
 
@@ -31,6 +33,8 @@ export function move_collider(area, direction) {
 export function rotate_collider(area, direction, axisCoord) {
   const areaAfterRotate = R.rotateBlock(area, direction, axisCoord);
   if (is_collide_boundary(areaAfterRotate)) return area;
+  if (is_already_block(area, areaAfterRotate)) return area;
+
   return areaAfterRotate;
 }
 

@@ -6,14 +6,20 @@ import * as A from "./area.js";
 // rotateBlock :: Area -> Direction -> Coord -> Area
 export function rotateBlock(area, direction, axisCoord) {
   if (axisCoord === null) return area;
+  const movePoints = L.move_points(area);
 
   const above = find_rotateInfos(area, direction, "above", axisCoord);
   const right = find_rotateInfos(area, direction, "right", axisCoord);
   const left = find_rotateInfos(area, direction, "left", axisCoord);
   const below = find_rotateInfos(area, direction, "below", axisCoord);
 
-  const movePoints = L.move_points(area);
-  return movePoints([...above, ...right, ...left, ...below]);
+  const moveInfos = [...above, ...right, ...left, ...below];
+
+  const isOverY = moveInfos.map(([_, y]) => y).some((n) => n < 0 || n > 19);
+  const isOverX = moveInfos.map(([x]) => x).some((n) => n < 0 || n > 9);
+  if (isOverX || isOverY) return area;
+
+  return movePoints(moveInfos);
 }
 
 /*

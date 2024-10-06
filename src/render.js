@@ -1,13 +1,10 @@
 import * as L from "./list.js";
 import * as A from "./area.js";
 
-const cellWidth = 50;
+const cellWidth = 35;
 
 const areaWidthLength = 10;
 const areaHeightLength = 20;
-
-const areaWidth = cellWidth * areaWidthLength;
-const areaHeightght = cellWidth * areaHeightLength;
 
 const containerClass = "container";
 
@@ -32,7 +29,7 @@ export function render(area, activeBlockColor) {
   for (let y = 0; y < areaList.length; y++) {
     for (let x = 0; x < areaList[y].length; x++) {
       const axisValue = areaList[y][x];
-      const newCell = cell(axisValue, activeBlockColor);
+      const newCell = cell(axisValue, activeBlockColor, x, y);
       areaContainer.append(newCell);
     }
   }
@@ -47,23 +44,35 @@ function gameAreaContainer() {
   gameAreaContainer.style.display = "grid";
   gameAreaContainer.style.gridTemplateColumns = `repeat(${areaWidthLength}, 1fr)`;
   gameAreaContainer.style.gridTemplateRows = `repeat(${areaHeightLength}, 1fr)`;
-  gameAreaContainer.style.border = "2px solid black";
+  gameAreaContainer.style.border = "3px solid black";
+  gameAreaContainer.style.backgroundColor = "#2e2e2e";
   return gameAreaContainer;
 }
 
-function cell(value, currentColor) {
+function cell(value, currentColor, x, y) {
   const newCell = document.createElement("div");
+  newCell.style.boxSizing = "border-box";
   newCell.style.width = cellWidth + "px";
   newCell.style.height = cellWidth + "px";
-  newCell.style.border = "1px solid black";
-  newCell.textContent = value; // for debug
+  newCell.style.border = "0.5px solid #3bcf3d";
+  // newCell.textContent = `(${x}, ${y})`; // for debug
+  // newCell.textContent = value; // for debug
+
+  if (A.is_active(value) || A.is_inactive(value)) {
+    newCell.style.opacity = "0.9";
+    newCell.style.boxShadow = "2px 2px 5px rgba(0, 0, 0, 0)";
+    newCell.style.transition = "box-shadow 0.2s ease";
+  }
 
   if (A.is_active(value)) {
     newCell.style.background = currentColor;
+    newCell.style.borderColor = currentColor;
   }
 
   if (A.is_inactive(value)) {
-    newCell.style.background = A.inactiveColor(value);
+    const inActiveColor = A.inactiveColor(value);
+    newCell.style.background = inActiveColor;
+    newCell.style.borderColor = inActiveColor;
   }
 
   return newCell;

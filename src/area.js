@@ -11,7 +11,7 @@ export function inactiveColor(n) {
   if (n === 31) return "limegreen";
   if (n === 41) return "red";
   if (n === 51) return "purple";
-  else return "cyan";
+  if (n === 61) return "cyan";
 }
 
 export function inactive(color) {
@@ -21,7 +21,7 @@ export function inactive(color) {
   if (color === "limegreen") return 31;
   if (color === "red") return 41;
   if (color === "purple") return 51;
-  else return 61;
+  if (color === "cyan") return 61;
 }
 
 export function active() {
