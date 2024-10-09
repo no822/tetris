@@ -1,27 +1,28 @@
 import * as L from "./list.js";
+import * as B from "./block.js";
 
 export function empty() {
   return 0;
 }
 
 export function inactiveColor(n) {
-  if (n === 1) return "blue";
-  if (n === 11) return "orange";
-  if (n === 21) return "yellow";
-  if (n === 31) return "limegreen";
-  if (n === 41) return "red";
-  if (n === 51) return "purple";
-  if (n === 61) return "cyan";
+  if (n === 1) return B.color(B.IBLOCK());
+  if (n === 11) return B.color(B.OBLOCK());
+  if (n === 21) return B.color(B.TBLOCK());
+  if (n === 31) return B.color(B.LBLOCK());
+  if (n === 41) return B.color(B.JBLOCK());
+  if (n === 51) return B.color(B.SBLOCK());
+  if (n === 61) return B.color(B.ZBLOCK());
 }
 
 export function inactive(color) {
-  if (color === "blue") return 1;
-  if (color === "orange") return 11;
-  if (color === "yellow") return 21;
-  if (color === "limegreen") return 31;
-  if (color === "red") return 41;
-  if (color === "purple") return 51;
-  if (color === "cyan") return 61;
+  if (color === B.color(B.IBLOCK())) return 1;
+  if (color === B.color(B.OBLOCK())) return 11;
+  if (color === B.color(B.TBLOCK())) return 21;
+  if (color === B.color(B.LBLOCK())) return 31;
+  if (color === B.color(B.JBLOCK())) return 41;
+  if (color === B.color(B.SBLOCK())) return 51;
+  if (color === B.color(B.ZBLOCK())) return 61;
 }
 
 export function active() {
@@ -36,15 +37,15 @@ export function is_empty(n) {
   return n === empty();
 }
 
-export function is_inactive(n) {
+export function is_inactive(c) {
   return (
-    n === inactive("blue") ||
-    n === inactive("orange") ||
-    n === inactive("yellow") ||
-    n === inactive("limegreen") ||
-    n === inactive("red") ||
-    n === inactive("purple") ||
-    n === inactive("cyan")
+    c === inactive(B.color(B.IBLOCK())) ||
+    c === inactive(B.color(B.OBLOCK())) ||
+    c === inactive(B.color(B.TBLOCK())) ||
+    c === inactive(B.color(B.LBLOCK())) ||
+    c === inactive(B.color(B.JBLOCK())) ||
+    c === inactive(B.color(B.SBLOCK())) ||
+    c === inactive(B.color(B.ZBLOCK()))
   );
 }
 
