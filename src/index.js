@@ -60,9 +60,10 @@
 
 import * as B from "./block.js";
 import * as A from "./area.js";
+import * as C from "./collider.js";
+import * as D from "./drop.js";
 import * as AB from "./add.js";
 import * as RE from "./render.js";
-import * as C from "./collider.js";
 import * as LD from "./landing.js";
 
 // TODO 초기 세팅 코드 모듈 분리
@@ -93,7 +94,8 @@ document.addEventListener("keydown", (e) => {
     );
   } else if (e.key === "Enter") {
     // hard drop
-    for (let i = 0; i < 20; i++) {
+    const length = D.length_from_floor(area);
+    for (let i = 0; i < length; i++) {
       area = LD.landing(
         area,
         C.move_collider(area, "down"),

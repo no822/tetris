@@ -56,8 +56,8 @@ function is_collide_boundary(afterArea) {
 
 // is_collide_before_move :: (Area, Direction) -> boolean
 function is_collide_before_move(beforeArea, direction) {
-  function filter_current_coords(coords, currentCoords) {
-    return coords.filter((coord) => {
+  function filter_current_coords(currentCoords, nextCoords) {
+    return nextCoords.filter((coord) => {
       return (
         currentCoords.find((c) => c[0] === coord[0] && c[1] && coord[1]) ===
         undefined
@@ -66,14 +66,14 @@ function is_collide_before_move(beforeArea, direction) {
   }
 
   const currentActiveCoords = A.find_active_coords(beforeArea);
-  if (direction === "up") true;
 
+  if (direction === "up") true;
   if (direction === "right") {
     const rightBlockCoords = filter_current_coords(
+      currentActiveCoords,
       currentActiveCoords.map(([x, y]) => {
         return [x + 1, y];
       }),
-      currentActiveCoords,
     );
 
     for (let i = 0; i < rightBlockCoords.length; i++) {
@@ -87,10 +87,10 @@ function is_collide_before_move(beforeArea, direction) {
 
   if (direction === "left") {
     const leftBlockCoords = filter_current_coords(
+      currentActiveCoords,
       currentActiveCoords.map(([x, y]) => {
         return [x - 1, y];
       }),
-      currentActiveCoords,
     );
 
     for (let i = 0; i < leftBlockCoords.length; i++) {

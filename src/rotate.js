@@ -23,7 +23,7 @@ export function rotateBlock(area, direction, axisCoord) {
 }
 
 /*
-find_rotateInfos::
+find_rotateInfos ::
 (
   area,
   directionFromAxis,

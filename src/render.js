@@ -44,7 +44,7 @@ function gameAreaContainer() {
   gameAreaContainer.style.display = "grid";
   gameAreaContainer.style.gridTemplateColumns = `repeat(${areaWidthLength}, 1fr)`;
   gameAreaContainer.style.gridTemplateRows = `repeat(${areaHeightLength}, 1fr)`;
-  gameAreaContainer.style.border = "3px solid black";
+  gameAreaContainer.style.border = "5px solid black";
   gameAreaContainer.style.backgroundColor = "#2e2e2e";
   return gameAreaContainer;
 }
@@ -60,8 +60,7 @@ function cell(value, currentColor, x, y) {
 
   if (A.is_active(value) || A.is_inactive(value)) {
     newCell.style.opacity = "0.9";
-    newCell.style.boxShadow = "2px 2px 5px rgba(0, 0, 0, 0)";
-    newCell.style.transition = "box-shadow 0.2s ease";
+    newCell.style.border = "4px outset gray";
   }
 
   if (A.is_active(value)) {
