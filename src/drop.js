@@ -20,11 +20,17 @@ export function length_from_floor(area) {
   const initialBlockCoords = below_coords(currentActiveCoords);
 
   return (function recur(targetCoords, count = 1) {
+    const is_no_space = targetCoords.length === 0;
+
     const is_every_empty = targetCoords
       .map(([x, y]) => L.point(x, y, area))
-      .every((n) => A.is_empty(n));
+      .every((n) => {
+        return A.is_empty(n);
+      });
 
-    if (is_every_empty) {
+    if (is_no_space) {
+      return count;
+    } else if (is_every_empty) {
       const newTargetCoords = below_coords(targetCoords);
       return recur(newTargetCoords, count + 1);
     } else {
