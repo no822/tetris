@@ -1,8 +1,14 @@
 import * as L from "./list.js";
 import * as B from "./block.js";
+import * as D from "./drop.js";
 
+// constructors
 export function empty() {
   return 0;
+}
+
+export function ghost() {
+  return 9;
 }
 
 export function inactiveColor(n) {
@@ -33,19 +39,29 @@ export function axis() {
   return 3;
 }
 
-export function is_empty(n) {
-  return n === empty();
+export function axis_coord(area) {
+  return L.find_coordinate(area, axis());
 }
 
-export function is_inactive(c) {
+// predicates
+export function is_ghost(n) {
+  return n === ghost();
+}
+
+export function is_empty(n) {
+  return n === empty() || is_ghost(n);
+}
+
+export function is_inactive(n) {
+  if (is_ghost(n)) return false;
   return (
-    c === inactive(B.color(B.IBLOCK())) ||
-    c === inactive(B.color(B.OBLOCK())) ||
-    c === inactive(B.color(B.TBLOCK())) ||
-    c === inactive(B.color(B.LBLOCK())) ||
-    c === inactive(B.color(B.JBLOCK())) ||
-    c === inactive(B.color(B.SBLOCK())) ||
-    c === inactive(B.color(B.ZBLOCK()))
+    n === inactive(B.color(B.IBLOCK())) ||
+    n === inactive(B.color(B.OBLOCK())) ||
+    n === inactive(B.color(B.TBLOCK())) ||
+    n === inactive(B.color(B.LBLOCK())) ||
+    n === inactive(B.color(B.JBLOCK())) ||
+    n === inactive(B.color(B.SBLOCK())) ||
+    n === inactive(B.color(B.ZBLOCK()))
   );
 }
 
@@ -55,10 +71,6 @@ export function is_active(n) {
 
 export function is_axis(n) {
   return n === axis();
-}
-
-export function axis_coord(area) {
-  return L.find_coordinate(area, axis());
 }
 
 // MoveInfo :: [x, y, point]
@@ -81,21 +93,38 @@ export function activeMap(area, xMove, yMove) {
   return activeCoords(xyMap(area, xMove, yMove));
 }
 
-// removeActive :: list -> list
-export function removeActive(list) {
-  return L.map(list, (item) => {
-    if (is_active(item)) return empty();
+// removeGhost :: Area -> Area
+export function removeGhost(area) {
+  return removeBlock(area, is_ghost);
+}
+
+// removeActive :: Area -> Area
+export function removeActive(area) {
+  return removeBlock(area, is_active);
+}
+
+export function find_ghost_coords(area) {
+  return find_coords_in_area(area, is_ghost);
+}
+
+export function find_active_coords(area) {
+  return find_coords_in_area(area, is_active);
+}
+
+function removeBlock(area, predicate) {
+  return L.map(area, (item) => {
+    if (predicate(item)) return empty();
     return item;
   });
 }
 
-export function find_active_coords(area) {
+function find_coords_in_area(area, predicate) {
   const list = L.listToArray(area);
   const coords = [];
 
   for (let y = 0; y < list.length; y++) {
     for (let x = 0; x < list[y].length; x++) {
-      if (is_active(list[y][x])) {
+      if (predicate(list[y][x])) {
         coords.push([x, y]);
       }
     }
@@ -110,6 +139,21 @@ export function fix_landing_block(area, currentBlockColor) {
     if (is_active(i)) return inactive(currentBlockColor);
     return i;
   });
+}
+
+// add_ghost :: Area -> Area
+export function add_ghost(area) {
+  const active_coords = find_active_coords(area);
+  const from_floor = D.length_from_floor(area);
+  const ghost_coords = active_coords.map(([x, y]) => {
+    return [x, y + from_floor - 1];
+  });
+
+  return (function recur(coords, newArea) {
+    if (coords.length === 0) return newArea;
+    const [[x, y], ...rest] = coords;
+    return recur(rest, L.set_point(x, y, ghost(), newArea));
+  })(ghost_coords, removeGhost(area));
 }
 
 export function GameArea() {

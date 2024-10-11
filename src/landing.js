@@ -18,7 +18,7 @@ export function landing(
   setNewColor(B.color(nextBlock));
 
   return C.add_collider(
-    A.fix_landing_block(areaBeforeMove, currentColor),
+    A.fix_landing_block(A.removeGhost(areaBeforeMove), currentColor),
     nextBlock,
     () => alert("game over"),
   );

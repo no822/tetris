@@ -59,8 +59,12 @@ function cell(value, currentColor, x, y) {
   // newCell.textContent = value; // for debug
 
   if (A.is_active(value) || A.is_inactive(value)) {
-    newCell.style.opacity = "0.9";
     newCell.style.border = "4px outset gray";
+  }
+
+  if (A.is_ghost(value)) {
+    newCell.style.border = "4px outset gray";
+    newCell.style.backgroundColor = "rgba(255, 255, 255, 0.3)";
   }
 
   if (A.is_active(value)) {
