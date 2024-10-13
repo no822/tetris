@@ -15,10 +15,18 @@ export function clear() {
   }
 }
 
+export function focus() {
+  const gameAreaContainer = document.querySelector("." + containerClass);
+  if (gameAreaContainer) {
+    gameAreaContainer.focus();
+  }
+}
+
 // render :: Area -> void
 export function render(area, activeBlockColor) {
   const areaList = L.listToArray(area);
   const body = document.querySelector("body");
+
   body.style.display = "flex";
   body.style.justifyContent = "center";
   body.style.alignItems = "center";
@@ -37,8 +45,10 @@ export function render(area, activeBlockColor) {
   body.append(areaContainer);
 }
 
+// gameAreaContainer :: () -> void
 function gameAreaContainer() {
   const gameAreaContainer = document.createElement("div");
+
   gameAreaContainer.classList.add(containerClass);
   gameAreaContainer.style.gap = 0;
   gameAreaContainer.style.display = "grid";
@@ -46,9 +56,11 @@ function gameAreaContainer() {
   gameAreaContainer.style.gridTemplateRows = `repeat(${areaHeightLength}, 1fr)`;
   gameAreaContainer.style.border = "5px solid black";
   gameAreaContainer.style.backgroundColor = "#2e2e2e";
+
   return gameAreaContainer;
 }
 
+// cell :: () -> void
 function cell(value, currentColor, x, y) {
   const newCell = document.createElement("div");
   newCell.style.boxSizing = "border-box";
@@ -64,15 +76,17 @@ function cell(value, currentColor, x, y) {
 
   if (A.is_ghost(value)) {
     newCell.style.border = "4px outset gray";
-    newCell.style.opacity = 0.5;
+    newCell.style.color =
+      "linear-gradient(to bottom, #555555 0%, #1a1a1a 50%, #000000 100%)";
     newCell.style.background =
       "linear-gradient(to bottom, #555555 0%, #1a1a1a 50%, #000000 100%)";
-    newCell.style.boxShadow = `inset 0 10px 20px rgba(255, 255, 255, 0.9),
+    newCell.style.boxShadow = `inset 0 10px 20px rgba(255, 255, 255, 0.2),
             inset 0 -10px 20px rgba(0, 0, 0, 0.5),
             0 4px 8px rgba(0, 0, 0, 0.8)`;
   }
 
   if (A.is_active(value)) {
+    newCell.style.color = currentColor;
     newCell.style.background = currentColor;
     newCell.style.borderColor = currentColor;
   }

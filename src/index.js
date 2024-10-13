@@ -54,58 +54,57 @@
   - 'Super Rotation System' 적용
   - 렌더링 최적화
   - 다양한 렌더러 구현
+  - 블록 홀드 기능
  */
 
 import * as A from "./area.js";
 import * as B from "./block.js";
 import * as C from "./collider.js";
-import * as D from "./drop.js";
-import * as LD from "./landing.js";
 import * as RE from "./render.js";
+import * as E from "./event.js";
 
-// TODO 초기 세팅 코드 모듈 분리
-const initialBlock = B.makeRandomBlock();
-const initialBlockColor = B.color(initialBlock);
+function init() {
+  const initialBlock = B.makeRandomBlock();
+  const initialBlockColor = B.color(initialBlock);
 
-let area = C.add_collider(A.GameArea(), initialBlock);
-let currentBlockColor = initialBlockColor;
-RE.render(area, currentBlockColor);
-
-// TODO 임시 구현. 모듈 분리
-document.addEventListener("keydown", (e) => {
-  const axisCoord = A.axis_coord(area);
-  function set_current_block_color(color) {
-    currentBlockColor = color;
-  }
-
-  if (e.key === "j") {
-    area = C.move_collider(area, "left");
-  } else if (e.key === "l") {
-    area = C.move_collider(area, "right");
-  } else if (e.key === "k") {
-    area = LD.landing(
-      area,
-      C.move_collider(area, "down"),
-      currentBlockColor,
-      set_current_block_color,
-    );
-  } else if (e.key === " " || e.key === "Spacebar") {
-    // hard drop
-    const length = D.length_from_floor(area);
-    for (let i = 0; i < length; i++) {
-      area = LD.landing(
-        area,
-        C.move_collider(area, "down", true),
-        currentBlockColor,
-        set_current_block_color,
-      );
-    }
-  } else if (e.key === "f") {
-    area = C.rotate_collider(area, "right", axisCoord);
-  } else if (e.key === "d") {
-    area = C.rotate_collider(area, "left", axisCoord);
-  }
-
-  RE.clear();
+  let area = C.add_collider(A.GameArea(), initialBlock);
+  let currentBlockColor = initialBlockColor;
   RE.render(area, currentBlockColor);
-});
+  RE.focus();
+
+  document.addEventListener(
+    "keydown",
+    E.handlerSetter(area, currentBlockColor),
+  );
+}
+
+// setting console.log message handler
+(function () {
+  const initial_message1 = "> type";
+  const initial_message2 = `console.log(\"game start\")`;
+  const iniaial_message1_style = `
+    color:black;
+    font-size: 1rem;`;
+  const iniaial_message2_style = `
+    font-style:italic;
+    color:green;
+    font-size: 1rem;`;
+
+  console.log(
+    `%c${initial_message1} %c${initial_message2}`,
+    iniaial_message1_style,
+    iniaial_message2_style,
+  );
+
+  const originalLog = console.log;
+  console.log = function (...args) {
+    // 로그를 가로채서 원하는 작업을 수행
+    const keyword = args.join(" ");
+    if (keyword === "game start") {
+      return init();
+    }
+
+    // 원래의 console.log 동작도 유지
+    originalLog.apply(console, args);
+  };
+})();
