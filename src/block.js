@@ -2,7 +2,7 @@ import * as L from "./list.js";
 
 export const IBLOCK = function () {
   return L.list(
-    "blue",
+    "cyan",
     L.list(
       L.list(2, 3, 2, 2),
       L.list(0, 0, 0, 0),
@@ -14,7 +14,7 @@ export const IBLOCK = function () {
 
 export const OBLOCK = function () {
   return L.list(
-    "orange",
+    "yellow",
     L.list(
       L.list(2, 2, 0, 0),
       L.list(2, 2, 0, 0),
@@ -26,7 +26,7 @@ export const OBLOCK = function () {
 
 export const TBLOCK = function () {
   return L.list(
-    "yellow",
+    "blue",
     L.list(
       L.list(2, 3, 2, 0),
       L.list(0, 2, 0, 0),
@@ -39,7 +39,7 @@ export const TBLOCK = function () {
 // 다른 블럭과 축이 다름
 export const LBLOCK = function () {
   return L.list(
-    "limegreen",
+    "orange",
     L.list(
       L.list(2, 0, 0, 0),
       L.list(2, 3, 2, 0),
@@ -51,7 +51,7 @@ export const LBLOCK = function () {
 
 export const JBLOCK = function () {
   return L.list(
-    "red",
+    "purple",
     L.list(
       L.list(2, 3, 2, 0),
       L.list(0, 0, 2, 0),
@@ -63,7 +63,7 @@ export const JBLOCK = function () {
 
 export const SBLOCK = function () {
   return L.list(
-    "purple",
+    "green",
     L.list(
       L.list(2, 3, 0, 0),
       L.list(0, 2, 2, 0),
@@ -75,7 +75,7 @@ export const SBLOCK = function () {
 
 export const ZBLOCK = function () {
   return L.list(
-    "cyan",
+    "red",
     L.list(
       L.list(0, 3, 2, 0),
       L.list(2, 2, 0, 0),

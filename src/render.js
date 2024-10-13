@@ -64,7 +64,12 @@ function cell(value, currentColor, x, y) {
 
   if (A.is_ghost(value)) {
     newCell.style.border = "4px outset gray";
-    newCell.style.backgroundColor = "rgba(255, 255, 255, 0.3)";
+    newCell.style.opacity = 0.5;
+    newCell.style.background =
+      "linear-gradient(to bottom, #555555 0%, #1a1a1a 50%, #000000 100%)";
+    newCell.style.boxShadow = `inset 0 10px 20px rgba(255, 255, 255, 0.9),
+            inset 0 -10px 20px rgba(0, 0, 0, 0.5),
+            0 4px 8px rgba(0, 0, 0, 0.8)`;
   }
 
   if (A.is_active(value)) {
