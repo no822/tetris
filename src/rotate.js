@@ -6,7 +6,7 @@ import * as A from "./area.js";
 // rotateBlock :: Area -> Direction -> Coord -> Area
 export function rotateBlock(area, direction, axisCoord) {
   if (axisCoord === null) return area;
-  const movePoints = L.move_points(area);
+  const movePoints = L.move_active_points(area);
 
   const above = find_rotateInfos(area, direction, "above", axisCoord);
   const right = find_rotateInfos(area, direction, "right", axisCoord);

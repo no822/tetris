@@ -2,10 +2,12 @@ import * as L from "./list.js";
 import * as A from "./area.js";
 
 // length_from_floor :: Area -> number
-export function length_from_floor(area) {
-  const currentActiveCoords = A.find_active_coords(area);
+export function length_from_floor(area, find_target_coords) {
+  const currentActiveCoords = find_target_coords
+    ? find_target_coords(area)
+    : A.find_active_coords(area);
 
-  function coords_below_active_block(coords) {
+  function coords_below_current_coords(coords) {
     return coords
       .map(([x, y]) => [x, y + 1])
       .filter((coord) => {
@@ -17,7 +19,7 @@ export function length_from_floor(area) {
       });
   }
 
-  const initialBlockCoords = coords_below_active_block(currentActiveCoords);
+  const initialBlockCoords = coords_below_current_coords(currentActiveCoords);
 
   return (function recur(targetCoords, count = 1) {
     const is_no_space = targetCoords.length === 0;
@@ -29,7 +31,7 @@ export function length_from_floor(area) {
     if (is_no_space) {
       return count;
     } else if (is_every_empty) {
-      const newTargetCoords = coords_below_active_block(targetCoords);
+      const newTargetCoords = coords_below_current_coords(targetCoords);
       return recur(newTargetCoords, count + 1);
     } else {
       return count;
@@ -37,10 +39,11 @@ export function length_from_floor(area) {
   })(initialBlockCoords);
 }
 
+// length_from_ghost :: Area -> number
 export function length_from_ghost(area) {
   const currentActiveCoords = A.find_active_coords(area);
 
-  function coords_below_active_block(coords) {
+  function coords_below_current_coords(coords) {
     return coords
       .map(([x, y]) => [x, y + 1])
       .filter((coord) => {
@@ -52,7 +55,7 @@ export function length_from_ghost(area) {
       });
   }
 
-  const initialBlockCoords = coords_below_active_block(currentActiveCoords);
+  const initialBlockCoords = coords_below_current_coords(currentActiveCoords);
 
   return (function recur(targetCoords, count = 1) {
     const is_no_space = targetCoords.length === 0;
@@ -66,7 +69,7 @@ export function length_from_ghost(area) {
     if (is_no_ghost) return 0;
     if (is_any_ghost) return count;
     else if (!is_any_ghost) {
-      const newTargetCoords = coords_below_active_block(targetCoords);
+      const newTargetCoords = coords_below_current_coords(targetCoords);
       return recur(newTargetCoords, count + 1);
     } else {
       return count;

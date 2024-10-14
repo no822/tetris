@@ -15,13 +15,6 @@ export function clear() {
   }
 }
 
-export function focus() {
-  const gameAreaContainer = document.querySelector("." + containerClass);
-  if (gameAreaContainer) {
-    gameAreaContainer.focus();
-  }
-}
-
 // render :: Area -> void
 export function render(area, activeBlockColor) {
   const areaList = L.listToArray(area);

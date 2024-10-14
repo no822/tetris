@@ -23,10 +23,10 @@ export function add_collider(area, block, gameOver) {
     : A.add_ghost(areaAfterAdd);
 }
 
-// moveBlock :: (Area -> Direction) -> Area
+// move_active_block :: (Area -> Direction) -> Area
 // move_collider :: (Area, Direction) -> Area
 export function move_collider(area, direction, is_hide_ghost = false) {
-  const areaAfterMove = M.moveBlock(area, direction);
+  const areaAfterMove = M.move_active_block(area, direction);
 
   if (is_collide_boundary(areaAfterMove)) return area;
   if (is_collide_before_move(area, direction)) return area;

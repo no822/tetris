@@ -1,6 +1,6 @@
 /*
 ****** 요구사항 정리 *****
-진척도: 68% (20/29 * 100)
+진척도: 73% (22/30 * 100)
 
 ***** 기능 *****
 [x] 7종류의 블럭들: 블럭 종류, 색상
@@ -19,7 +19,7 @@
 ***** 블럭충돌 *****
 [x] 블럭 착지
 [x] 안착한 블럭과 충돌
-[ ] 블럭 제거(한줄 완성시) <-
+[x] 블럭 제거(한줄 완성시)
 
 ***** 게임진행관련기능 *****
 [ ] 게임 Start
@@ -45,11 +45,10 @@
 [x] landing 로직 수정(아래로 한번 더 움직였을때 발동하도록 변경)
 [x] 좌우 충돌 특정 경우에 제대로 작동하지 않는 문제
 [x] 블록 회전시 충돌한 경우 대응
-[ ] Ghost Block 깜박이는 문제
+[x] Ghost Block 깜박이는 문제
 [ ] landing, collider 관련 테스트코드 보완
 
 ***** Advanced ***** (todo 카운팅에서는 제외)
-  - 블럭 착지 지점 표시 피드백
   - 블럭 랜덤 생성 가중치
   - 'Super Rotation System' 적용
   - 렌더링 최적화
@@ -70,7 +69,6 @@ function init() {
   let area = C.add_collider(A.GameArea(), initialBlock);
   let currentBlockColor = initialBlockColor;
   RE.render(area, currentBlockColor);
-  RE.focus();
 
   document.addEventListener(
     "keydown",
@@ -78,33 +76,34 @@ function init() {
   );
 }
 
-// setting console.log message handler
-(function () {
-  const initial_message1 = "> type";
-  const initial_message2 = `console.log(\"game start\")`;
-  const iniaial_message1_style = `
-    color:black;
-    font-size: 1rem;`;
-  const iniaial_message2_style = `
-    font-style:italic;
-    color:green;
-    font-size: 1rem;`;
+// catch console.log message
+// (function () {
+//   const initial_message1 = "> type";
+//   const initial_message2 = `console.log(\"game start\")`;
+//   const iniaial_message1_style = `
+//     color:black;`;
+//   const iniaial_message2_style = `
+//     font-style:italic;
+//     color:green;`;
+//
+//   console.log(
+//     `%c${initial_message1} %c${initial_message2}`,
+//     iniaial_message1_style,
+//     iniaial_message2_style,
+//   );
+//
+//   const originalLog = console.log;
+//   console.log = function (...args) {
+//     // 로그를 가로채서 원하는 작업을 수행
+//     const keyword = args.join(" ");
+//     if (keyword === "game start") {
+//       init();
+//       return "OK";
+//     }
+//
+//     // 원래의 console.log 동작도 유지
+//     originalLog.apply(console, args);
+//   };
+// })();
 
-  console.log(
-    `%c${initial_message1} %c${initial_message2}`,
-    iniaial_message1_style,
-    iniaial_message2_style,
-  );
-
-  const originalLog = console.log;
-  console.log = function (...args) {
-    // 로그를 가로채서 원하는 작업을 수행
-    const keyword = args.join(" ");
-    if (keyword === "game start") {
-      return init();
-    }
-
-    // 원래의 console.log 동작도 유지
-    originalLog.apply(console, args);
-  };
-})();
+init();

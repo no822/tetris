@@ -112,6 +112,7 @@ export function makeBlock(type) {
 
 export function makeRandomBlock() {
   // TODO 몬테카를로 방법 적용해보기
+  // const types = ["I", "O"];
   const types = ["I", "O", "J", "L", "T", "S", "Z"];
   return makeBlock(types[Math.floor(Math.random() * types.length)]);
 }

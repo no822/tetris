@@ -2,6 +2,7 @@ import * as L from "./list.js";
 import * as A from "./area.js";
 import * as C from "./collider.js";
 import * as B from "./block.js";
+import * as R from "./remove.js";
 
 // landing :: Area -> Area
 export function landing(
@@ -17,11 +18,18 @@ export function landing(
   const nextBlock = B.makeRandomBlock();
   setNewColor(B.color(nextBlock));
 
-  return C.add_collider(
-    A.fix_landing_block(A.removeGhost(areaBeforeMove), currentColor),
-    nextBlock,
-    () => alert("game over"),
+  const [newArea, sumOfRemovedLines] = R.remove_lines(
+    C.add_collider(
+      A.fix_landing_block(A.removeGhost(areaBeforeMove), currentColor),
+      nextBlock,
+      () => alert("game over"),
+    ),
   );
+
+  // TODO 점수 계산 모듈에 전달
+  console.log(sumOfRemovedLines);
+
+  return newArea;
 }
 
 // is_landing :: Area -> boolean

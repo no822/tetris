@@ -1,4 +1,5 @@
 import * as A from "./area.js";
+import * as L from "./list.js";
 
 export function pair(x, y) {
   function dispatch(n) {
@@ -119,7 +120,7 @@ export function set_point(x, y, value, list) {
   }
 }
 
-export function move_points(list) {
+export function move_active_points(list) {
   return function (moveInfos) {
     const deleted = moveInfos.reduce((newList, [sourceX, sourceY]) => {
       return set_point(sourceX, sourceY, A.empty(), newList);

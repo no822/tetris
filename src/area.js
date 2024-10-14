@@ -93,14 +93,16 @@ export function activeMap(area, xMove, yMove) {
   return activeCoords(xyMap(area, xMove, yMove));
 }
 
-// removeGhost :: Area -> Area
 export function removeGhost(area) {
   return removeBlock(area, is_ghost);
 }
 
-// removeActive :: Area -> Area
 export function removeActive(area) {
   return removeBlock(area, is_active);
+}
+
+export function removeLines(area) {
+  return removeBlock(area, is_line);
 }
 
 export function find_ghost_coords(area) {

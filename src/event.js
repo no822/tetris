@@ -1,7 +1,7 @@
-import * as D from "./drop.js";
-import * as LD from "./landing.js";
 import * as A from "./area.js";
+import * as D from "./drop.js";
 import * as C from "./collider.js";
+import * as LD from "./landing.js";
 import * as RE from "./render.js";
 
 export function handlerSetter(area, currentBlockColor) {
@@ -30,8 +30,8 @@ export function handlerSetter(area, currentBlockColor) {
 
       // hard drop
     } else if (e.key === " " || e.key === "Spacebar") {
-      const length = D.length_from_floor(area);
-      for (let i = 0; i < length; i++) {
+      const length_from_floor = D.length_from_floor(area);
+      for (let i = 0; i < length_from_floor; i++) {
         area = LD.landing(
           area,
           C.move_collider(area, "down", true),
@@ -41,7 +41,7 @@ export function handlerSetter(area, currentBlockColor) {
       }
       e.preventDefault();
 
-      // ratation
+      // rotation
     } else if (e.key === "f") {
       area = C.rotate_collider(area, "right", axisCoord);
       e.preventDefault();
