@@ -63,6 +63,7 @@ function drop_upper_lines(area, remove_target_y_indexes, sumOfRemovedLines) {
 
   const moveInfos = drop_target_indexes
     .map((targetIndex) => {
+      // [sourceXCoord, sourcYCoord, destXCoord, destYcoord]
       return [
         [0, targetIndex, 0, targetIndex + sumOfRemovedLines],
         [1, targetIndex, 1, targetIndex + sumOfRemovedLines],

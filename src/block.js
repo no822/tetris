@@ -53,8 +53,8 @@ export const JBLOCK = function () {
   return L.list(
     "purple",
     L.list(
-      L.list(2, 3, 2, 0),
       L.list(0, 0, 2, 0),
+      L.list(2, 3, 2, 0),
       L.list(0, 0, 0, 0),
       L.list(0, 0, 0, 0),
     ),

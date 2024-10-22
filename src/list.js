@@ -1,11 +1,37 @@
 import * as A from "./area.js";
-import * as L from "./list.js";
 
 export function pair(x, y) {
-  function dispatch(n) {
-    return n === 0 ? x : n === 1 ? y : "error";
+  function set_x(v) {
+    x = v;
   }
+
+  function set_y(v) {
+    y = v;
+  }
+
+  function dispatch(n) {
+    return n === 0
+      ? x
+      : n === 1
+        ? y
+        : n === "set_head"
+          ? set_x
+          : n === "set_tail"
+            ? set_y
+            : "error";
+  }
+
   return dispatch;
+}
+
+export function set_head(z, new_value) {
+  z("set_head")(new_value);
+  return z;
+}
+
+export function set_tail(z, new_value) {
+  z("set_tail")(new_value);
+  return z;
 }
 
 export function is_pair(p) {

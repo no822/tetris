@@ -24,8 +24,8 @@
 ***** 게임진행관련기능 *****
 [ ] 게임 Start
 [ ] 점수 manager
-[ ] 다음 블럭
-[ ] 난이도(블럭 스피드, 점수 상승 공식)
+[ ] 다음 블럭 <
+[ ] 난이도(블럭 스피드, 점수 상승 공식) <
 [x] 게임오버
 
 ***** UI *****
@@ -59,8 +59,10 @@
 import * as A from "./area.js";
 import * as B from "./block.js";
 import * as C from "./collider.js";
-import * as RE from "./render.js";
 import * as E from "./event.js";
+import * as RE from "./render.js";
+
+import * as Q from "./queue.js";
 
 function init() {
   const initialBlock = B.makeRandomBlock();
@@ -75,6 +77,8 @@ function init() {
     E.handlerSetter(area, currentBlockColor),
   );
 }
+
+init();
 
 // catch console.log message
 // (function () {
@@ -105,5 +109,3 @@ function init() {
 //     originalLog.apply(console, args);
 //   };
 // })();
-
-init();
