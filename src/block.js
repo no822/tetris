@@ -36,7 +36,6 @@ export const TBLOCK = function () {
   );
 };
 
-// 다른 블럭과 축이 다름
 export const LBLOCK = function () {
   return L.list(
     "orange",

@@ -62,8 +62,6 @@ import * as C from "./collider.js";
 import * as E from "./event.js";
 import * as RE from "./render.js";
 
-import * as Q from "./queue.js";
-
 function init() {
   const initialBlock = B.makeRandomBlock();
   const initialBlockColor = B.color(initialBlock);
