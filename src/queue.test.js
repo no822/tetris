@@ -19,6 +19,14 @@ function print_queue(queue) {
 }
 
 describe("queue.js", () => {
+  test("빈 queue", () => {
+    // given
+    const q = Q.make_queue();
+
+    // when & then
+    expect(print_queue(q)).toEqual("Queue is empty");
+  });
+
   test("빈 queue에 첫번째 item 삽입", () => {
     // given
     const q = Q.make_queue();
@@ -62,6 +70,7 @@ describe("queue.js", () => {
     Q.insert_queue(q1, "b");
     Q.insert_queue(q2, "a");
     Q.insert_queue(q2, "b");
+
     Q.delete_queue(q1);
     Q.delete_queue(q2);
 
@@ -82,7 +91,9 @@ describe("queue.js", () => {
 
     Q.insert_queue(q, "a");
     Q.insert_queue(q, "b");
+
     Q.delete_queue(q);
+
     Q.insert_queue(q, "c");
     Q.insert_queue(q, "d");
 

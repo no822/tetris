@@ -1,6 +1,6 @@
 /*
 ****** 요구사항 정리 *****
-진척도: 73% (22/30 * 100)
+진척도: 80% (24/30 * 100)
 
 ***** 기능 *****
 [x] 7종류의 블럭들: 블럭 종류, 색상
@@ -24,7 +24,7 @@
 ***** 게임진행관련기능 *****
 [ ] 게임 Start
 [ ] 점수 manager
-[ ] 다음 블럭 <
+[x] 다음 블럭
 [ ] 난이도(블럭 스피드, 점수 상승 공식) <
 [x] 게임오버
 
@@ -32,7 +32,7 @@
 [x] Area
 [x] Block
 [x] Point
-[ ] Next Blocks
+[x] Next Blocks
 [ ] Game Over
 [x] Ghost Block(착지 지점 피드백)
 
@@ -59,20 +59,37 @@
 import * as A from "./area.js";
 import * as B from "./block.js";
 import * as C from "./collider.js";
+import * as L from "./list.js";
 import * as E from "./event.js";
 import * as RE from "./render.js";
+import * as BQ from "./block_queue.js";
 
 function init() {
-  const initialBlock = B.makeRandomBlock();
-  const initialBlockColor = B.color(initialBlock);
+  function initial_area() {
+    const block = B.makeRandomBlock();
+    const blockColor = B.color(block);
+    const area = C.add_collider(A.GameArea(), block);
+    const block_queue = BQ.init_block_queue();
 
-  let area = C.add_collider(A.GameArea(), initialBlock);
-  let currentBlockColor = initialBlockColor;
-  RE.render(area, currentBlockColor);
+    RE.render(
+      area,
+      blockColor,
+      BQ.get_current_blocks(block_queue).map((block) => {
+        return B.color(block);
+      }),
+      BQ.get_current_blocks(block_queue).map((block) => {
+        return L.listToArray(B.coords(block));
+      }),
+    );
+
+    return [area, blockColor, block_queue];
+  }
+
+  const [initialArea, initialBlockColor, initialBlockQueue] = initial_area();
 
   document.addEventListener(
     "keydown",
-    E.handlerSetter(area, currentBlockColor),
+    E.handlerSetter(initialArea, initialBlockQueue, initialBlockColor),
   );
 }
 

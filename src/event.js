@@ -1,15 +1,36 @@
 import * as A from "./area.js";
-import * as D from "./drop.js";
+import * as B from "./block.js";
 import * as C from "./collider.js";
+import * as D from "./drop.js";
+import * as R from "./remove.js";
+import * as L from "./list.js";
 import * as LD from "./landing.js";
 import * as RE from "./render.js";
+import * as BQ from "./block_queue.js";
 
-export function handlerSetter(area, currentBlockColor) {
+export function handlerSetter(area, blocks, currentBlockColor) {
   return function keyDownHandler(e) {
     const axisCoord = A.axis_coord(area);
 
-    function set_current_block_color(color) {
+    function set_current_color(color) {
       currentBlockColor = color;
+    }
+
+    function landingEventHandler(prevArea) {
+      const [nextBlock, nextBlocks] = BQ.next_block(blocks);
+      blocks = nextBlocks;
+
+      const [newArea, sumOfRemovedLines] = R.remove_lines(
+        C.add_collider(
+          A.fix_landing_block(A.removeGhost(prevArea), currentBlockColor),
+          nextBlock,
+          () => alert("game over"),
+        ),
+      );
+
+      set_current_color(B.color(nextBlock));
+
+      return newArea;
     }
 
     // moving
@@ -23,8 +44,7 @@ export function handlerSetter(area, currentBlockColor) {
       area = LD.landing(
         area,
         C.move_collider(area, "down"),
-        currentBlockColor,
-        set_current_block_color,
+        landingEventHandler,
       );
       e.preventDefault();
 
@@ -35,8 +55,7 @@ export function handlerSetter(area, currentBlockColor) {
         area = LD.landing(
           area,
           C.move_collider(area, "down", true),
-          currentBlockColor,
-          set_current_block_color,
+          landingEventHandler,
         );
       }
       e.preventDefault();
@@ -48,9 +67,19 @@ export function handlerSetter(area, currentBlockColor) {
     } else if (e.key === "d") {
       area = C.rotate_collider(area, "left", axisCoord);
       e.preventDefault();
+    } else {
+      return;
     }
 
-    RE.clear();
-    RE.render(area, currentBlockColor);
+    RE.render(
+      area,
+      currentBlockColor,
+      BQ.get_current_blocks(blocks).map((block) => {
+        return B.color(block);
+      }),
+      BQ.get_current_blocks(blocks).map((block) => {
+        return L.listToArray(B.coords(block));
+      }),
+    );
   };
 }

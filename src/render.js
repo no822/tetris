@@ -6,27 +6,36 @@ const cellWidth = 35;
 const areaWidthLength = 10;
 const areaHeightLength = 20;
 
-const containerClass = "container";
+const mainLayoutContainerClass = "main_layout_container";
+const subLayoutContainerClass = "sub_layout_container";
+const gameAreaContainerClass = "game_area_container";
+const nextBlocksContainerClass = "next_blocks_containers";
 
 export function clear() {
-  const gameAreaContainer = document.querySelector("." + containerClass);
-  if (gameAreaContainer) {
-    gameAreaContainer.remove();
+  const layoutContainer = document.querySelector(
+    "." + mainLayoutContainerClass,
+  );
+  if (layoutContainer) {
+    layoutContainer.remove();
   }
 }
 
 // render :: Area -> void
-export function render(area, activeBlockColor) {
+export function render(
+  area,
+  activeBlockColor,
+  nextBlockColors = [],
+  nextBlockCoords = [],
+) {
+  clear();
+
   const areaList = L.listToArray(area);
   const body = document.querySelector("body");
 
-  body.style.display = "flex";
-  body.style.justifyContent = "center";
-  body.style.alignItems = "center";
-  body.style.margin = "0px";
-  body.style.height = "100vh";
+  const mainLayout = mainLayoutContainer();
+  const subLayout = subLayoutContainer();
 
-  const areaContainer = gameAreaContainer();
+  const areaContainer = gameArea();
   for (let y = 0; y < areaList.length; y++) {
     for (let x = 0; x < areaList[y].length; x++) {
       const axisValue = areaList[y][x];
@@ -35,25 +44,127 @@ export function render(area, activeBlockColor) {
     }
   }
 
-  body.append(areaContainer);
+  // 레이아웃을 위한 값 삽입 & 제거
+  const firstLine =
+    nextBlockCoords.length === 0
+      ? []
+      : [[A.empty(), A.empty(), A.empty(), A.empty(), A.empty()]];
+
+  const nextBlocksCoordsForRender = [
+    firstLine,
+    ...nextBlockCoords.map((coord) => {
+      return coord
+        .map((c) => [A.empty(), ...c])
+        .filter((_, index) => {
+          if (index === coord.length - 1) return false;
+          return true;
+        });
+    }),
+  ];
+
+  const blockColors = ["", ...nextBlockColors];
+
+  const blocksContainer = nextBlocksContainer();
+  for (let y = 0; y < nextBlocksCoordsForRender.length; y++) {
+    const currentBlockColor = blockColors[y];
+    for (let x = 0; x < nextBlocksCoordsForRender[y].length; x++) {
+      const blockCoords = nextBlocksCoordsForRender[y][x];
+      blockCoords.forEach((point) => {
+        const newCell = cell(point, currentBlockColor, x, y);
+        blocksContainer.append(newCell);
+      });
+    }
+  }
+
+  mainLayout.append(areaContainer);
+
+  subLayout.append(blocksContainer);
+  subLayout.append(pointAreaContainer());
+
+  mainLayout.append(subLayout);
+
+  body.append(mainLayout);
 }
 
-// gameAreaContainer :: () -> void
-function gameAreaContainer() {
+function mainLayoutContainer() {
+  const mainLayoutContainer = document.createElement("div");
+  mainLayoutContainer.classList.add(mainLayoutContainerClass);
+  mainLayoutContainer.style.display = "flex";
+  mainLayoutContainer.style.justifyContent = "center";
+  mainLayoutContainer.style.alignItems = "center";
+  mainLayoutContainer.style.margin = "0px";
+  mainLayoutContainer.style.height = "720px";
+  mainLayoutContainer.style.boxSizing = "border-box";
+
+  return mainLayoutContainer;
+}
+
+function subLayoutContainer() {
+  const subLayoutContainer = document.createElement("div");
+
+  subLayoutContainer.classList.add(subLayoutContainerClass);
+  subLayoutContainer.style.display = "flex";
+  subLayoutContainer.style.flexDirection = "column";
+  subLayoutContainer.style.height = "100%";
+  subLayoutContainer.style.border = "10px solid black";
+  subLayoutContainer.style.boxSizing = "border-box";
+  subLayoutContainer.style.gap = "10px";
+  subLayoutContainer.style.backgroundColor = "black";
+
+  subLayoutContainer.append(subLayoutLabel("NEXT"));
+  return subLayoutContainer;
+}
+
+function subLayoutLabel(text) {
+  const nextLabel = document.createElement("label");
+  nextLabel.textContent = text;
+  nextLabel.style.color = "#3bcf3d";
+  nextLabel.style.outline = "1px solid #3bcf3d";
+  nextLabel.style.fontSize = "2em";
+  nextLabel.style.fontWeight = "bold";
+  nextLabel.style.display = "flex";
+  nextLabel.style.justifyContent = "center";
+  nextLabel.style.height = "35px";
+
+  return nextLabel;
+}
+
+function gameArea() {
   const gameAreaContainer = document.createElement("div");
 
-  gameAreaContainer.classList.add(containerClass);
+  gameAreaContainer.classList.add(gameAreaContainerClass);
   gameAreaContainer.style.gap = 0;
   gameAreaContainer.style.display = "grid";
   gameAreaContainer.style.gridTemplateColumns = `repeat(${areaWidthLength}, 1fr)`;
   gameAreaContainer.style.gridTemplateRows = `repeat(${areaHeightLength}, 1fr)`;
-  gameAreaContainer.style.border = "5px solid black";
+  gameAreaContainer.style.border = "10px solid black";
   gameAreaContainer.style.backgroundColor = "#2e2e2e";
 
   return gameAreaContainer;
 }
 
-// cell :: () -> void
+function nextBlocksContainer() {
+  const newBlockArea = document.createElement("div");
+
+  newBlockArea.classList.add(nextBlocksContainerClass);
+  newBlockArea.style.display = "grid";
+  newBlockArea.style.gridTemplateColumns = "repeat(5, 1fr)";
+  newBlockArea.style.gridTemplateRows = "repeat(13, 1fr)";
+  newBlockArea.style.gap = 0;
+  newBlockArea.style.backgroundColor = "#2e2e2e";
+  return newBlockArea;
+}
+
+function pointAreaContainer() {
+  const pointArea = document.createElement("div");
+
+  pointArea.style.height = `calc(100% - ${cellWidth * 13}px)`;
+
+  pointArea.append(subLayoutLabel("POINT"));
+
+  return pointArea;
+}
+
 function cell(value, currentColor, x, y) {
   const newCell = document.createElement("div");
   newCell.style.boxSizing = "border-box";
