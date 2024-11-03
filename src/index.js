@@ -65,7 +65,13 @@ import * as RE from "./render.js";
 import * as BQ from "./block_queue.js";
 
 function init() {
+  let event;
+
   function initial_area() {
+    if (event) {
+      document.removeEventListener("keydown", event);
+    }
+
     const block = B.makeRandomBlock();
     const blockColor = B.color(block);
     const area = C.add_collider(A.GameArea(), block);
@@ -85,12 +91,34 @@ function init() {
     return [area, blockColor, block_queue];
   }
 
+  function restart_game() {
+    const [newArea, newBlockColor, newBlockQueue] = initial_area();
+    if (event) {
+      document.removeEventListener("keydown", event);
+    }
+
+    event = E.handlerSetter(
+      newArea,
+      newBlockQueue,
+      newBlockColor,
+      restart_game,
+    );
+
+    document.addEventListener("keydown", event);
+  }
+
   const [initialArea, initialBlockColor, initialBlockQueue] = initial_area();
 
-  document.addEventListener(
-    "keydown",
-    E.handlerSetter(initialArea, initialBlockQueue, initialBlockColor),
-  );
+  RE.gameStart(() => {
+    RE.deleteStartPopup();
+    event = E.handlerSetter(
+      initialArea,
+      initialBlockQueue,
+      initialBlockColor,
+      restart_game,
+    );
+    document.addEventListener("keydown", event);
+  });
 }
 
 init();

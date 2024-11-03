@@ -1,5 +1,7 @@
 import * as L from "./list.js";
 import * as A from "./area.js";
+import * as B from "./block.js";
+import * as BQ from "./block_queue.js";
 
 const cellWidth = 35;
 
@@ -10,6 +12,7 @@ const mainLayoutContainerClass = "main_layout_container";
 const subLayoutContainerClass = "sub_layout_container";
 const gameAreaContainerClass = "game_area_container";
 const nextBlocksContainerClass = "next_blocks_containers";
+const startPopupContainerClass = "start_popup_container";
 
 export function clear() {
   const layoutContainer = document.querySelector(
@@ -70,7 +73,7 @@ export function render(
     for (let x = 0; x < nextBlocksCoordsForRender[y].length; x++) {
       const blockCoords = nextBlocksCoordsForRender[y][x];
       blockCoords.forEach((point) => {
-        const newCell = cell(point, currentBlockColor, x, y);
+        const newCell = cell(point, currentBlockColor, x, y, "#2e2e2e");
         blocksContainer.append(newCell);
       });
     }
@@ -86,9 +89,133 @@ export function render(
   body.append(mainLayout);
 }
 
+export function gameStart(startHandler = () => console.log("game start")) {
+  const mainContainer = document.querySelector("." + mainLayoutContainerClass);
+
+  function gameStartPopup(listener) {
+    const popupContainer = document.createElement("div");
+    popupContainer.classList.add(startPopupContainerClass);
+
+    popupContainer.style.display = "flex";
+    popupContainer.style.flexDirection = "column";
+    popupContainer.style.gap = "10px";
+
+    popupContainer.style.position = "absolute";
+    popupContainer.style.top = "50%";
+    popupContainer.style.left = "50%";
+    popupContainer.style.transform = "translate(-50%, -50%)";
+
+    popupContainer.style.width = "180px";
+    popupContainer.style.height = "50px";
+
+    popupContainer.style.color = "white";
+    popupContainer.style.backgroundColor = "#2e2e2e";
+
+    popupContainer.style.border = "5px double #3bcf3d";
+    popupContainer.style.borderRadius = "8px";
+    popupContainer.style.boxShadow =
+      "0px 8px 30px rgba(0, 0, 0, 0.3), 0px 10px 40px rgba(0, 0, 0, 0.25)";
+
+    popupContainer.style.display = "flex";
+    popupContainer.style.justifyContent = "center";
+    popupContainer.style.alignItems = "center";
+
+    popupContainer.style.fontSize = "2em";
+
+    popupContainer.style.color = "#3bcf3d";
+
+    const startButton = document.createElement("button");
+    startButton.style.all = "unset";
+    startButton.style.color = "#3bcf3d";
+    startButton.style.cursor = "pointer";
+    startButton.style.backgroundColor = "#2e2e2e";
+
+    startButton.style.fontSize = "36px";
+    startButton.textContent = "PLAY";
+    startButton.addEventListener("click", listener);
+
+    popupContainer.append(startButton);
+    return popupContainer;
+  }
+
+  mainContainer.append(gameStartPopup(startHandler));
+}
+
+export function deleteStartPopup() {
+  const startPopupContainer = document.querySelector(
+    "." + startPopupContainerClass,
+  );
+
+  if (startPopupContainerClass) {
+    startPopupContainer.remove();
+  }
+}
+
+export function gameOver(restartHandler = () => console.log("not implement")) {
+  const mainContainer = document.querySelector("." + mainLayoutContainerClass);
+
+  function gameOverNoticePopup(listener) {
+    const popupContainer = document.createElement("div");
+    popupContainer.style.display = "flex";
+    popupContainer.style.flexDirection = "column";
+    popupContainer.style.gap = "10px";
+
+    popupContainer.style.position = "absolute";
+    popupContainer.style.top = "50%";
+    popupContainer.style.left = "50%";
+    popupContainer.style.transform = "translate(-50%, -50%)";
+
+    popupContainer.style.width = "200px";
+    popupContainer.style.height = "100px";
+
+    popupContainer.style.color = "white";
+    popupContainer.style.backgroundColor = "#2e2e2e";
+
+    popupContainer.style.border = "5px double #3bcf3d";
+    popupContainer.style.borderRadius = "8px";
+    popupContainer.style.boxShadow =
+      "0px 4px 15px rgba(0, 0, 0, 0.2), 0px 6px 20px rgba(0, 0, 0, 0.19)";
+
+    popupContainer.style.display = "flex";
+    popupContainer.style.justifyContent = "center";
+    popupContainer.style.alignItems = "center";
+
+    popupContainer.style.fontSize = "2em";
+
+    popupContainer.style.color = "#3bcf3d";
+    popupContainer.textContent = "GAME OVER";
+
+    const restartButton = document.createElement("button");
+    restartButton.style.color = "#3bcf3d";
+    restartButton.style.cursor = "pointer";
+    restartButton.style.fontSize = "16px";
+    restartButton.textContent = "Restart";
+    restartButton.addEventListener("click", listener);
+
+    popupContainer.append(restartButton);
+    return popupContainer;
+  }
+
+  mainContainer.append(gameOverNoticePopup(restartHandler));
+}
+
+export function resetGame(newArea, newBlockColor, newBlockQueue) {
+  render(
+    newArea,
+    newBlockColor,
+    BQ.get_current_blocks(newBlockQueue).map((block) => {
+      return B.color(block);
+    }),
+    BQ.get_current_blocks(newBlockQueue).map((block) => {
+      return L.listToArray(B.coords(block));
+    }),
+  );
+}
+
 function mainLayoutContainer() {
   const mainLayoutContainer = document.createElement("div");
   mainLayoutContainer.classList.add(mainLayoutContainerClass);
+  mainLayoutContainer.style.position = "relative";
   mainLayoutContainer.style.display = "flex";
   mainLayoutContainer.style.justifyContent = "center";
   mainLayoutContainer.style.alignItems = "center";
@@ -117,6 +244,7 @@ function subLayoutContainer() {
 
 function subLayoutLabel(text) {
   const nextLabel = document.createElement("label");
+
   nextLabel.textContent = text;
   nextLabel.style.color = "#3bcf3d";
   nextLabel.style.outline = "1px solid #3bcf3d";
@@ -152,6 +280,9 @@ function nextBlocksContainer() {
   newBlockArea.style.gridTemplateRows = "repeat(13, 1fr)";
   newBlockArea.style.gap = 0;
   newBlockArea.style.backgroundColor = "#2e2e2e";
+  newBlockArea.style.border = "1px solid #3bcf3d";
+  newBlockArea.style.padding = "0 10px 0 0px";
+
   return newBlockArea;
 }
 
@@ -165,12 +296,12 @@ function pointAreaContainer() {
   return pointArea;
 }
 
-function cell(value, currentColor, x, y) {
+function cell(value, currentColor, x, y, lineColor = "#3bcf3d") {
   const newCell = document.createElement("div");
   newCell.style.boxSizing = "border-box";
   newCell.style.width = cellWidth + "px";
   newCell.style.height = cellWidth + "px";
-  newCell.style.border = "0.5px solid #3bcf3d";
+  newCell.style.border = `0.5px solid ${lineColor}`;
   // newCell.textContent = `(${x}, ${y})`; // for debug
   // newCell.textContent = value; // for debug
 

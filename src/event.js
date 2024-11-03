@@ -8,9 +8,18 @@ import * as LD from "./landing.js";
 import * as RE from "./render.js";
 import * as BQ from "./block_queue.js";
 
-export function handlerSetter(area, blocks, currentBlockColor) {
+export function handlerSetter(area, blocks, currentBlockColor, restartGame) {
+  let isGameOver = false;
+
   return function keyDownHandler(e) {
     const axisCoord = A.axis_coord(area);
+
+    function game_over() {
+      isGameOver = true;
+
+      RE.resetGame(area, currentBlockColor, blocks);
+      RE.gameOver(() => restartGame());
+    }
 
     function set_current_color(color) {
       currentBlockColor = color;
@@ -24,7 +33,7 @@ export function handlerSetter(area, blocks, currentBlockColor) {
         C.add_collider(
           A.fix_landing_block(A.removeGhost(prevArea), currentBlockColor),
           nextBlock,
-          () => alert("game over"),
+          () => game_over(),
         ),
       );
 
@@ -71,15 +80,17 @@ export function handlerSetter(area, blocks, currentBlockColor) {
       return;
     }
 
-    RE.render(
-      area,
-      currentBlockColor,
-      BQ.get_current_blocks(blocks).map((block) => {
-        return B.color(block);
-      }),
-      BQ.get_current_blocks(blocks).map((block) => {
-        return L.listToArray(B.coords(block));
-      }),
-    );
+    if (!isGameOver) {
+      RE.render(
+        area,
+        currentBlockColor,
+        BQ.get_current_blocks(blocks).map((block) => {
+          return B.color(block);
+        }),
+        BQ.get_current_blocks(blocks).map((block) => {
+          return L.listToArray(B.coords(block));
+        }),
+      );
+    }
   };
 }
