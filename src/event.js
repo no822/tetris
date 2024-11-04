@@ -11,45 +11,72 @@ import * as BQ from "./block_queue.js";
 export function handlerSetter(area, blocks, currentBlockColor, restartGame) {
   let isGameOver = false;
 
+  function game_over() {
+    isGameOver = true;
+
+    RE.resetGame(area, currentBlockColor, blocks);
+    RE.gameOver(() => restartGame());
+  }
+
+  function set_current_color(color) {
+    currentBlockColor = color;
+  }
+
+  function landingEventHandler(prevArea) {
+    const [nextBlock, nextBlocks] = BQ.next_block(blocks);
+    blocks = nextBlocks;
+
+    const [newArea, sumOfRemovedLines] = R.remove_lines(
+      C.add_collider(
+        A.fix_landing_block(A.removeGhost(prevArea), currentBlockColor),
+        nextBlock,
+        () => game_over(),
+      ),
+    );
+
+    set_current_color(B.color(nextBlock));
+
+    return newArea;
+  }
+
+  function autoDownEventHandler() {
+    const interval = setInterval(() => {
+      area = LD.landing(
+        area,
+        C.move_collider(area, "down"),
+        landingEventHandler,
+      );
+
+      if (!isGameOver) {
+        RE.render(
+          area,
+          currentBlockColor,
+          BQ.get_current_blocks(blocks).map((block) => {
+            return B.color(block);
+          }),
+          BQ.get_current_blocks(blocks).map((block) => {
+            return L.listToArray(B.coords(block));
+          }),
+        );
+      } else {
+        clearInterval(interval);
+      }
+    }, 900);
+  }
+
+  autoDownEventHandler();
+
   return function keyDownHandler(e) {
     const axisCoord = A.axis_coord(area);
 
-    function game_over() {
-      isGameOver = true;
-
-      RE.resetGame(area, currentBlockColor, blocks);
-      RE.gameOver(() => restartGame());
-    }
-
-    function set_current_color(color) {
-      currentBlockColor = color;
-    }
-
-    function landingEventHandler(prevArea) {
-      const [nextBlock, nextBlocks] = BQ.next_block(blocks);
-      blocks = nextBlocks;
-
-      const [newArea, sumOfRemovedLines] = R.remove_lines(
-        C.add_collider(
-          A.fix_landing_block(A.removeGhost(prevArea), currentBlockColor),
-          nextBlock,
-          () => game_over(),
-        ),
-      );
-
-      set_current_color(B.color(nextBlock));
-
-      return newArea;
-    }
-
     // moving
-    if (e.key === "j") {
+    if (e.key === "j" || e.key === "ㅓ") {
       area = C.move_collider(area, "left");
       e.preventDefault();
-    } else if (e.key === "l") {
+    } else if (e.key === "l" || e.key === "ㅣ") {
       area = C.move_collider(area, "right");
       e.preventDefault();
-    } else if (e.key === "k") {
+    } else if (e.key === "k" || e.key === "ㅏ") {
       area = LD.landing(
         area,
         C.move_collider(area, "down"),
@@ -70,10 +97,10 @@ export function handlerSetter(area, blocks, currentBlockColor, restartGame) {
       e.preventDefault();
 
       // rotation
-    } else if (e.key === "f") {
+    } else if (e.key === "f" || e.key === "ㄹ") {
       area = C.rotate_collider(area, "right", axisCoord);
       e.preventDefault();
-    } else if (e.key === "d") {
+    } else if (e.key === "d" || e.key === "ㅇ") {
       area = C.rotate_collider(area, "left", axisCoord);
       e.preventDefault();
     } else {
