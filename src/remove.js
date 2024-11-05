@@ -28,6 +28,7 @@ function sum_of_removed_lines(
   remove_target_y_indexes,
   sumOfRemovedLines,
 ) {
+  // console.log(remove_target_y_indexes)
   if (remove_target_y_indexes.length === 0) {
     return sumOfRemovedLines;
   }

@@ -1,7 +1,5 @@
 import * as L from "./list.js";
 import * as A from "./area.js";
-import * as B from "./block.js";
-import * as BQ from "./block_queue.js";
 
 const cellWidth = 35;
 
@@ -29,6 +27,8 @@ export function render(
   activeBlockColor,
   nextBlockColors = [],
   nextBlockCoords = [],
+  difficulty = 1,
+  point = 0,
 ) {
   clear();
 
@@ -82,7 +82,7 @@ export function render(
   mainLayout.append(areaContainer);
 
   subLayout.append(blocksContainer);
-  subLayout.append(pointAreaContainer());
+  subLayout.append(pointAreaContainer(difficulty, point));
 
   mainLayout.append(subLayout);
 
@@ -96,6 +96,7 @@ export function gameStart(startHandler = () => console.log("game start")) {
     const popupContainer = document.createElement("div");
     popupContainer.classList.add(startPopupContainerClass);
 
+    popupContainer.style.zIndex = 10;
     popupContainer.style.display = "flex";
     popupContainer.style.flexDirection = "column";
     popupContainer.style.gap = "10px";
@@ -106,7 +107,7 @@ export function gameStart(startHandler = () => console.log("game start")) {
     popupContainer.style.transform = "translate(-50%, -50%)";
 
     popupContainer.style.width = "180px";
-    popupContainer.style.height = "50px";
+    popupContainer.style.height = "80px";
 
     popupContainer.style.color = "white";
     popupContainer.style.backgroundColor = "#2e2e2e";
@@ -125,7 +126,6 @@ export function gameStart(startHandler = () => console.log("game start")) {
     popupContainer.style.color = "#3bcf3d";
 
     const startButton = document.createElement("button");
-    startButton.style.all = "unset";
     startButton.style.color = "#3bcf3d";
     startButton.style.cursor = "pointer";
     startButton.style.backgroundColor = "#2e2e2e";
@@ -138,6 +138,7 @@ export function gameStart(startHandler = () => console.log("game start")) {
     return popupContainer;
   }
 
+  mainContainer.append(popupOverlay());
   mainContainer.append(gameStartPopup(startHandler));
 }
 
@@ -186,30 +187,18 @@ export function gameOver(restartHandler = () => console.log("not implement")) {
     popupContainer.textContent = "GAME OVER";
 
     const restartButton = document.createElement("button");
+    restartButton.style.backgroundColor = "#2e2e2e";
     restartButton.style.color = "#3bcf3d";
     restartButton.style.cursor = "pointer";
     restartButton.style.fontSize = "16px";
-    restartButton.textContent = "Restart";
+    restartButton.textContent = "> Restart";
     restartButton.addEventListener("click", listener);
 
     popupContainer.append(restartButton);
     return popupContainer;
   }
-
+  mainContainer.append(popupOverlay());
   mainContainer.append(gameOverNoticePopup(restartHandler));
-}
-
-export function resetGame(newArea, newBlockColor, newBlockQueue) {
-  render(
-    newArea,
-    newBlockColor,
-    BQ.get_current_blocks(newBlockQueue).map((block) => {
-      return B.color(block);
-    }),
-    BQ.get_current_blocks(newBlockQueue).map((block) => {
-      return L.listToArray(B.coords(block));
-    }),
-  );
 }
 
 function mainLayoutContainer() {
@@ -235,7 +224,7 @@ function subLayoutContainer() {
   subLayoutContainer.style.height = "100%";
   subLayoutContainer.style.border = "10px solid black";
   subLayoutContainer.style.boxSizing = "border-box";
-  subLayoutContainer.style.gap = "10px";
+  subLayoutContainer.style.gap = "15px";
   subLayoutContainer.style.backgroundColor = "black";
 
   subLayoutContainer.append(subLayoutLabel("NEXT"));
@@ -286,14 +275,50 @@ function nextBlocksContainer() {
   return newBlockArea;
 }
 
-function pointAreaContainer() {
-  const pointArea = document.createElement("div");
+function pointAreaContainer(currentDifficulty, currentPoint) {
+  const pointAreaContainer = document.createElement("div");
 
-  pointArea.style.height = `calc(100% - ${cellWidth * 13}px)`;
+  pointAreaContainer.style.height = `calc(100% - ${cellWidth * 13}px)`;
+  pointAreaContainer.style.color = "#3bcf3d";
 
-  pointArea.append(subLayoutLabel("POINT"));
+  function difficultyArea() {
+    const difficultyArea = document.createElement("div");
+    difficultyArea.style.padding = "20px 0 10px";
+    difficultyArea.style.fontWeight = "bold";
+    difficultyArea.style.fontSize = "20px";
+    difficultyArea.innerText = `DIFFICULTY: ${currentDifficulty}`;
 
-  return pointArea;
+    return difficultyArea;
+  }
+
+  function pointArea() {
+    const pointArea = document.createElement("div");
+    pointArea.style.padding = "0px 0 20px";
+    pointArea.style.fontWeight = "bold";
+    pointArea.style.fontSize = "20px";
+
+    pointArea.innerText = `POINT: ${currentPoint}`;
+
+    return pointArea;
+  }
+
+  pointAreaContainer.append(subLayoutLabel("POINT"));
+  pointAreaContainer.append(difficultyArea());
+  pointAreaContainer.append(pointArea());
+
+  return pointAreaContainer;
+}
+
+function popupOverlay() {
+  const overlay = document.createElement("div");
+
+  overlay.style.position = "absolute";
+  overlay.style.width = "580px";
+  overlay.style.height = "100%";
+  overlay.style.backgroundColor = "gray";
+  overlay.style.opacity = "60%";
+
+  return overlay;
 }
 
 function cell(value, currentColor, x, y, lineColor = "#3bcf3d") {

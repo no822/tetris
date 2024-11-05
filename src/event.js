@@ -4,22 +4,57 @@ import * as C from "./collider.js";
 import * as D from "./drop.js";
 import * as R from "./remove.js";
 import * as L from "./list.js";
+import * as P from "./point.js";
 import * as LD from "./landing.js";
 import * as RE from "./render.js";
 import * as BQ from "./block_queue.js";
 
 export function handlerSetter(area, blocks, currentBlockColor, restartGame) {
+  let interval;
   let isGameOver = false;
+  let difficulty = 1;
+  let removedLines = 0;
+  let point = 0;
+
+  function set_current_color(color) {
+    currentBlockColor = color;
+  }
+
+  function set_difficulty(sum_of_removed_lines) {
+    const NEXT_DIFFICULTY_LINES = 10;
+    removedLines += sum_of_removed_lines;
+    if (removedLines >= NEXT_DIFFICULTY_LINES) {
+      difficulty += 1;
+      removedLines -= NEXT_DIFFICULTY_LINES;
+    }
+
+    autoDownEventHandler(difficulty);
+  }
+
+  function set_point(additionalPoint) {
+    point += additionalPoint;
+  }
 
   function game_over() {
     isGameOver = true;
 
-    RE.resetGame(area, currentBlockColor, blocks);
+    rerender_area(difficulty);
     RE.gameOver(() => restartGame());
   }
 
-  function set_current_color(color) {
-    currentBlockColor = color;
+  function rerender_area(currentDifficulty) {
+    RE.render(
+      area,
+      currentBlockColor,
+      BQ.get_current_blocks(blocks).map((block) => {
+        return B.color(block);
+      }),
+      BQ.get_current_blocks(blocks).map((block) => {
+        return L.listToArray(B.coords(block));
+      }),
+      currentDifficulty,
+      point,
+    );
   }
 
   function landingEventHandler(prevArea) {
@@ -34,38 +69,43 @@ export function handlerSetter(area, blocks, currentBlockColor, restartGame) {
       ),
     );
 
+    if (sumOfRemovedLines >= 1) {
+      const additionalPoint = P.point(difficulty, sumOfRemovedLines);
+      set_point(additionalPoint);
+    }
+    set_difficulty(sumOfRemovedLines);
     set_current_color(B.color(nextBlock));
 
     return newArea;
   }
 
-  function autoDownEventHandler() {
-    const interval = setInterval(() => {
-      area = LD.landing(
-        area,
-        C.move_collider(area, "down"),
-        landingEventHandler,
-      );
+  function autoDownEventHandler(currentDifficulty) {
+    if (interval) {
+      clearInterval(interval);
+    }
 
-      if (!isGameOver) {
-        RE.render(
+    const intervalTime = 1000 - currentDifficulty * 100;
+    interval = setInterval(
+      () => {
+        area = LD.landing(
           area,
-          currentBlockColor,
-          BQ.get_current_blocks(blocks).map((block) => {
-            return B.color(block);
-          }),
-          BQ.get_current_blocks(blocks).map((block) => {
-            return L.listToArray(B.coords(block));
-          }),
+          C.move_collider(area, "down"),
+          landingEventHandler,
         );
-      } else {
-        clearInterval(interval);
-      }
-    }, 900);
+
+        if (!isGameOver) {
+          rerender_area(currentDifficulty);
+        } else {
+          clearInterval(interval);
+        }
+      },
+      intervalTime <= 200 ? 200 : intervalTime,
+    );
   }
 
-  autoDownEventHandler();
+  autoDownEventHandler(difficulty);
 
+  // basic eventHandler
   return function keyDownHandler(e) {
     const axisCoord = A.axis_coord(area);
 
@@ -107,17 +147,9 @@ export function handlerSetter(area, blocks, currentBlockColor, restartGame) {
       return;
     }
 
+    // rerender
     if (!isGameOver) {
-      RE.render(
-        area,
-        currentBlockColor,
-        BQ.get_current_blocks(blocks).map((block) => {
-          return B.color(block);
-        }),
-        BQ.get_current_blocks(blocks).map((block) => {
-          return L.listToArray(B.coords(block));
-        }),
-      );
+      rerender_area(difficulty);
     }
   };
 }
